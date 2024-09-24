@@ -1,0 +1,1 @@
+(function(){chrome.extension.getBackgroundPage().ShowUi();})();

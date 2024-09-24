@@ -1,0 +1,1389 @@
+#lyjl *,
+#j_statu_dialog * {
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden
+}
+
+#lyjl a {
+    text-decoration: none
+}
+
+#lyjl ul li {
+    list-style: none
+}
+
+#lyjl h3,
+#j_statu_dialog h3,
+#j_profile_box h3 {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: bold
+}
+
+#lyjl ::-webkit-scrollbar {
+    width: 6px;
+    background-color: #e1e5ea
+}
+
+#lyjl ::-webkit-scrollbar-thumb {
+    background-color: #369;
+    border-radius: 2px
+}
+
+#lyjl ::-webkit-scrollbar-thumb:hover {
+    background-color: #0077b5
+}
+
+#lyjl ::-webkit-scrollbar-thumb:active {
+    background-color: #737ed7
+}
+
+#lyjl ::-webkit-scrollbar-thumb:window-inactive {
+    background-color: #0077b5
+}
+
+#lyjl .j-tidings div::-webkit-scrollbar {
+    width: 0;
+    background-color: #e1e5ea
+}
+
+#lyjl .j-more-condition-box input[type='search'] {
+    width: 200px
+}
+
+#lyjl input[type='search'] {
+    width: 140px;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 0
+}
+
+#lyjl input[type=text] {
+    height: 24px;
+    text-align: center;
+    margin: 0 4px;
+    border-radius: 0
+}
+
+#lyjl .j-fold-content input[type='text'] {
+    width: 32px;
+    text-align: center
+}
+
+#lyjl input[type='checkbox'] {
+    pointer-events: auto;
+    opacity: 1;
+    margin: auto;
+    position: relative;
+    vertical-align: middle;
+    box-shadow: none
+}
+
+#lyjl input[type='radio'] {
+    opacity: 1;
+    pointer-events: auto;
+    position: static;
+    box-shadow: none
+}
+
+#lyjl textarea {
+    height: 60px;
+    width: 100%;
+    padding: 4px
+}
+
+#lyjl hr {
+    border-bottom: .5px #f3f3f3 solid
+}
+
+#lyjl #j_logo {
+    position: fixed;
+    z-index: 9995;
+    padding: 2px;
+    top: 6px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%
+}
+
+#lyjl .j-ico-logo {
+    width: 32px;
+    height: 32px;
+    background-image: url('https://p5.itc.cn/images02/20201009/82f67e8825884e4b87c2b26588a929f1.png');
+    background-size: cover
+}
+
+#lyjl .j-lyjl-bg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 99999996;
+    display: none
+}
+
+#lyjl .j-window-box {
+    position: fixed;
+    width: 800px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    background: #fff;
+    z-index: 99999997;
+    display: none
+}
+
+#lyjl .j-cont-box {
+    overflow-y: auto
+}
+
+#lyjl .j-nav-left-box {
+    position: absolute;
+    width: 48px;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    background: -webkit-linear-gradient(top, #83c9fd, #0c9fe8 20%, #1979a8 80%, #0c8ae8)
+}
+
+#lyjl .j-content-box {
+    position: absolute;
+    width: 750px;
+    height: 100%;
+    left: 50px;
+    top: 0;
+    bottom: 0
+}
+
+#lyjl .j-me-box {
+    width: 48px;
+    height: 48px;
+    top: 0;
+    border-bottom: 1px solid #ccc
+}
+
+#lyjl .j-head-box {
+    background: #fff;
+    height: 36px;
+    width: 36px;
+    margin: 6px;
+    border-radius: 50%
+}
+
+#lyjl svg {
+    fill: none
+}
+
+#lyjl .j-me-svg {
+    stroke-width: 2px;
+    stroke: #0c9fe8
+}
+
+#lyjl .j-try {
+    stroke: #dedede
+}
+
+#lyjl .j-vip {
+    stroke: #0c9fe8
+}
+
+#lyjl .j-dia {
+    stroke: #e6b125
+}
+
+#lyjl .j-me-detail-box {
+    width: 220px;
+    height: 0;
+    transition: height .5s;
+    margin-top: -4px;
+    margin-left: 4px;
+    background: #fff;
+    position: fixed;
+    z-index: 99999999999;
+    visibility: hidden;
+    border: 1px solid #ddd
+}
+
+#lyjl .j-me-box:hover .j-me-detail-box {
+    height: 220px;
+    visibility: visible
+}
+
+#lyjl .j-top-box {
+    height: 32px;
+    width: 100%;
+    top: 0
+}
+
+#lyjl .j-account-box {
+    margin: 6px;
+    padding: 6px 6px;
+    text-align: center;
+    border: solid .5px #e5e5e5
+}
+
+#lyjl .j-account {
+    margin: 12px 16px
+}
+
+#lyjl .j-account-title {
+    width: 80%;
+    margin: auto;
+    padding: 6px;
+    border-bottom: 1px solid #e0e0e0
+}
+
+#lyjl .j-account span {
+    color: #000;
+    font-weight: bold
+}
+
+#lyjl .j-account a {
+    color: #000
+}
+
+#lyjl .j-account a:hover {
+    color: blue;
+    text-decoration: underline
+}
+
+#lyjl .j-head {
+    height: 42px;
+    width: 42px;
+    border-radius: 50%
+}
+
+#lyjl .j-head img {
+    width: 42px;
+    height: 42px
+}
+
+#lyjl .j-level-box {
+    margin: 6px auto
+}
+
+#lyjl .j-ico-level {
+    margin: 4px;
+    height: 24px;
+    width: 90px;
+    background-size: cover;
+    background-image: url('https://linkedinjl.oss-cn-beijing.aliyuncs.com/expand/version10/img/level.png')
+}
+
+#lyjl .j-level-try {
+    background-position: 0 0
+}
+
+#lyjl .j-level-vip {
+    background-position: -90px 0
+}
+
+#lyjl .j-level-dia {
+    background-position: -180px 0
+}
+
+#lyjl .j-level-sup {
+    background-position: -270px 0
+}
+
+#lyjl .j-upvip {
+    background: #a00;
+    border-radius: 24px;
+    border: 0;
+    width: 120px;
+    padding: 6px;
+    color: #fff;
+    box-shadow: 1px 1px 2px #fff
+}
+
+#lyjl .j-upvip:hover {
+    background-color: #f00
+}
+
+#lyjl .j-lyname,
+#lyjl .j-showbind {
+    line-height: 20px;
+    margin-left: 12px;
+    text-decoration: underline
+}
+
+#lyjl .j-close-dialog {
+    height: 24px
+}
+
+#lyjl .j-nav-first-option {
+    padding: 8px;
+    cursor: pointer
+}
+
+#lyjl .j-nav-svg {
+    stroke-width: 1px;
+    stroke: #ddd
+}
+
+#lyjl .j-nav-svg-active {
+    stroke-width: 1.5px;
+    stroke: #fff
+}
+
+#lyjl .j-shortcuts {
+    position: absolute;
+    bottom: 48px
+}
+
+#lyjl .j-thumbs,
+#lyjl .j-addLinkedin {
+    box-sizing: border-box;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    margin: 6px;
+    background-color: rgb(255, 255, 255, 0.1);
+    border-radius: 50%
+}
+
+#lyjl .j-menu-box {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    bottom: 0;
+    border-top: 1px solid #ccc
+}
+
+#lyjl .j-menu-box:hover .j-menu {
+    display: block;
+    visibility: visible
+}
+
+#lyjl .j-menu {
+    position: fixed;
+    bottom: 48px;
+    z-index: 999;
+    display: none;
+    transition: height .5s;
+    color: #fff;
+    padding: 4px;
+    background: #fff;
+    margin-left: 4px;
+    border: 1px solid #ddd
+}
+
+#lyjl .j-svg-menu {
+    stroke-width: 3px;
+    stroke: #fff
+}
+
+#lyjl .j-mneu ul {
+    list-style: none
+}
+
+#lyjl .j-menu button {
+    border: 0;
+    width: 100px;
+    margin: 2px 0;
+    padding: 6px 0;
+    color: #000;
+    border-bottom: 1px #eee solid
+}
+
+#lyjl .j-menu button:hover {
+    color: #0077b5
+}
+
+#lyjl section {
+    position: absolute;
+    width: 0;
+    transition: width .5s, height .5s;
+    top: 0
+}
+
+#lyjl .j-top-nav-box ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #fff
+}
+
+#lyjl .j-top-nav-box ul li {
+    margin-right: 2px;
+    text-align: center;
+    line-height: 36px;
+    height: 36px;
+    cursor: pointer
+}
+
+#lyjl .j-w34 {
+    width: 34%
+}
+
+#lyjl .j-w50 {
+    width: 50%
+}
+
+#lyjl .j-top-nav-box ul li:focus {
+    outline: 0
+}
+
+#lyjl .j-top-nav-box ul li:hover:not(.j-active) {
+    color: #0077b5;
+    border-top: 0;
+    font-size: 13px
+}
+
+#lyjl .j-active-not {
+    background: -webkit-linear-gradient(top, #f5f5f5, #eee 40%, #eee 60%, #f5f5f5);
+    color: #333
+}
+
+#lyjl .j-active {
+    background-color: rgba(18, 120, 246, 0.1);
+    color: #0077b5;
+    font-weight: bold
+}
+
+#lyjl .j-select {
+    visibility: visible;
+    width: 100%
+}
+
+#lyjl .j-select-not {
+    visibility: hidden
+}
+
+#lyjl .j-option {
+    display: none
+}
+
+#lyjl .j-option-active {
+    display: block
+}
+
+#lyjl .j-sha:hover {
+    background-color: rgb(255, 255, 255, 0.2)
+}
+
+#lyjl .j-bg-0,
+#j_statu_dialog .j-bg-0 {
+    background: -webkit-linear-gradient(top, #83c9fd, #0c9fe8 40%, #1979a8 60%, #0c8ae8);
+    color: #fff
+}
+
+#lyjl .j-bg-main {
+    background-color: #e7f1fe
+}
+
+#lyjl .j-bg-w {
+    background-color: #fff
+}
+
+#lyjl .j-w {
+    width: 99%;
+    margin: 6px auto
+}
+
+#lyjl .j-ctrl {
+    padding: 6px
+}
+
+#lyjl .j-ctrl button {
+    margin-right: 6px
+}
+
+#lyjl .j-nowrap,
+#j_statu_dialog .j-nowrap {
+    display: flex;
+    justify-content: space-between
+}
+
+#lyjl .j-nowrap-left {
+    display: flex;
+    justify-content: flex-start
+}
+
+#lyjl .j-nowrap-center {
+    display: flex;
+    justify-content: center
+}
+
+.j-div-center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+}
+
+#lyjl .j-bg-btn,
+#j_statu_dialog .j-bg-btn {
+    background: -webkit-linear-gradient(top, #83c9fd, #0c9fe8 40%, #1979a8 60%, #0c8ae8);
+    border: 0;
+    color: #fff
+}
+
+#lyjl .j-bg-btn:hover,
+#j_statu_dialog .j-bg-btn:hover {
+    background: -webkit-linear-gradient(top, #83c9fd, #0c9fe8 20%, #1979a8 80%, #0c8ae8)
+}
+
+#lyjl .j-layout-btn,
+#j_statu_dialog .j-layout-btn {
+    height: 24px;
+    padding: 0 8px
+}
+
+#lyjl .j-tidings,
+#lyjl .j-mes {
+    border-bottom: .5px solid #e6e9ec;
+    padding: 8px
+}
+
+#lyjl .j-tidings:hover,
+#lyjl .j-mes:hover {
+    background: #f5f5f5
+}
+
+#lyjl .j-tidings-cont,
+#lyjl .j-mes-cont {
+    width: 100%;
+    cursor: pointer;
+    max-height: 100px;
+    overflow-y: auto
+}
+
+#lyjl .j-yeji-box {
+    width: 40%;
+    border-right: 1px solid #ccc;
+    margin: 6px
+}
+
+#lyjl .j-yeji {
+    width: 50%;
+    padding-left: 12px
+}
+
+#lyjl .j-yeji p {
+    line-height: 32px
+}
+
+#lyjl .j-para-box {
+    width: 50%;
+    margin: auto 0;
+    line-height: 32px
+}
+
+#lyjl .j-para-box input[type='text'] {
+    width: 36px;
+    height: 20px;
+    margin: auto 2px
+}
+
+#lyjl .j-para-box input[type='checkbox'] {
+    margin-right: 4px
+}
+
+#lyjl .j-fold-box {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin: 4px auto
+}
+
+#lyjl .j-fold-title {
+    line-height: 28px;
+    margin-left: 6px
+}
+
+#lyjl .j-fold-head {
+    padding: 4px;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer
+}
+
+#lyjl .j-fold-head:hover {
+    background: -webkit-linear-gradient(top, #fff, #eee 40%, #eee 40%, #fff)
+}
+
+#lyjl .j-fold-head-active {
+    background: -webkit-linear-gradient(top, #fff, #eee 40%, #eee 60%, #fff);
+    border-bottom: 1px solid #ddd;
+    font-weight: bold
+}
+
+#lyjl .j-fold-content {
+    display: none;
+    padding: 12px 6px
+}
+
+#lyjl .j-svg-box {
+    width: 24px;
+    height: 24px;
+    margin: auto 0;
+    -webkit-transition: -webkit-transform .2s
+}
+
+#lyjl .j-svg-box:hover {
+    background: #f5f5f5;
+    background-color: rgba(0, 0, 0, 0.1)
+}
+
+#lyjl .j-svg-show {
+    transform: rotate(180deg)
+}
+
+#lyjl .j-friend {
+    padding: 8px 4px;
+    margin: auto 4px;
+    border-bottom: .5px solid #e6e9ec
+}
+
+#lyjl .j-friend:hover {
+    background: #f5f5f5
+}
+
+#lyjl .j-profile {
+    width: 440px;
+    padding: 0 6px
+}
+
+#lyjl .j-friend img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 2px solid #fff
+}
+
+#lyjl .j-friend img:hover {
+    border: 2px solid #0077b5
+}
+
+#lyjl .j-friend input {
+    margin-top: 22px
+}
+
+#lyjl .j-friend .j-tool-box {
+    width: 140px
+}
+
+#lyjl .j-oneline {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical
+}
+
+#lyjl .j-distance {
+    color: #666;
+    margin-left: 12px;
+    line-height: 24px
+}
+
+#lyjl .j-more-condition-box,
+#lyjl .j-connect-condition-box {
+    padding: 6px;
+    display: none;
+    margin: -6px auto 6px auto
+}
+
+#lyjl .j-more-condition-box span,
+#lyjl .j-connect-condition-box span {
+    color: #000
+}
+
+#lyjl .j-bg-search-condition {
+    border: 1px solid #ccc
+}
+
+#lyjl .j-bg-search-condition:hover {
+    border: 1px solid #0077b5
+}
+
+#lyjl .j-condition-box {
+    margin-right: 6px
+}
+
+#lyjl .j-condition {
+    position: absolute;
+    padding: 12px;
+    width: 400px;
+    left: 6px;
+    border: 1px solid #ccc;
+    display: none;
+    background: #fff;
+    z-index: 99999998
+}
+
+#lyjl .j-condition li {
+    padding: 2px 0;
+    list-style: none
+}
+
+#lyjl .j-mutual-img {
+    width: 48px
+}
+
+#lyjl .j-mutual-img img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin: 6px
+}
+
+#lyjl .j-condition-ctrl {
+    text-align: right
+}
+
+#lyjl .j-condition-cont {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 6px 0
+}
+
+#lyjl .j-condition-input:hover .j-select-condition {
+    display: block
+}
+
+#lyjl .j-select-condition {
+    position: absolute;
+    position: fixed;
+    max-height: 300px;
+    width: 300px;
+    border: 1px solid #eee;
+    background: #fff;
+    z-index: 99999999;
+    overflow-y: auto;
+    display: none
+}
+
+#lyjl .j-select-condition span {
+    display: block;
+    cursor: pointer;
+    padding: 6px;
+    border-bottom: 1px solid #eee
+}
+
+#lyjl .j-select-condition span:hover,
+#lyjl .j-select-condition .j-mutual-span:hover {
+    background: #e6e9ec
+}
+
+#lyjl .j-clean {
+    line-height: 24px;
+    cursor: pointer;
+    margin: auto 6px
+}
+
+#lyjl .j-tidings-table {
+    max-width: 100%;
+    width: 100%;
+    background: #FFF;
+    font-size: 12px;
+    border: 0;
+    text-align: center;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-top-left-radius: 2px
+}
+
+#lyjl .j-tidings-table>tbody>tr>td {
+    padding: 8px 0
+}
+
+#lyjl .j-tidings-table>tbody tr td:nth-child(1) {
+    width: 148px;
+    font-weight: bold
+}
+
+#lyjl .j-tidings-table>tbody tr td:nth-child(2) {
+    text-align: left
+}
+
+#lyjl .j-tidings-table>tbody tr td:nth-child(3) {
+    text-align: right;
+    width: 40px;
+    padding-right: 6px
+}
+
+#lyjl .j-tidings-table>tbody tr:nth-child(even) {
+    background: #fbf9f8
+}
+
+#lyjl .j-group-box {
+    border-bottom: 1px solid #e6e9ec;
+    border-top: 1px solid #e6e9ec;
+    font-weight: bold
+}
+
+#lyjl .j-group:hover {
+    color: #0077b5;
+    font-weight: bold
+}
+
+#lyjl .j-group-box-active {
+    background: #f0f0f0;
+    border-left: 2px solid #0077b5;
+    color: #0077b5
+}
+
+#lyjl .j-group-box-not-active {
+    background: #fff;
+    border-left: 2px solid #ccc
+}
+
+#lyjl .j-group {
+    width: 50%;
+    padding: 10px 6px;
+    cursor: pointer
+}
+
+#lyjl .j-group span {
+    padding-left: 6px
+}
+
+#lyjl .j-svg-group {
+    -webkit-transition: -webkit-transform .1s
+}
+
+#lyjl .j-group-tool {
+    width: 50%;
+    display: none;
+    padding: 0;
+    margin: auto 10px auto 6px
+}
+
+#lyjl .j-group-edit {
+    width: 50%;
+    display: block;
+    padding: 0;
+    margin: auto 10px auto 6px
+}
+
+#lyjl .j-group-friend {
+    display: none;
+    padding: 6px 0;
+    max-height: 400px;
+    overflow-y: auto
+}
+
+#lyjl .j-friend-not {
+    margin: 12px auto;
+    text-align: center
+}
+
+#lyjl .j-remark {
+    line-height: 18px;
+    width: 250px;
+    color: #999
+}
+
+#lyjl .j-sort-group-box {
+    min-height: 100px;
+    max-height: 400px;
+    padding: 6px;
+    overflow-y: auto
+}
+
+#lyjl .j-sort-group-box p {
+    line-height: 24px
+}
+
+#lyjl .j-sort-group {
+    border-bottom: 1px solid #eee;
+    padding: 6px 6px
+}
+
+#lyjl .j-sort-group:hover {
+    background-color: rgba(0, 0, 0, 0.05)
+}
+
+#lyjl .j-sort-group:hover p {
+    color: #0077b5
+}
+
+#lyjl .j-load-more {
+    text-align: center;
+    padding: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-weight: bold
+}
+
+#lyjl .j-load-more:hover {
+    color: #0077b5
+}
+
+#lyjl .j-svg-ico24 {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin: auto 4px;
+    background: rgba(0, 0, 0, 0.1)
+}
+
+#lyjl .j-svg-ico18 {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin: auto 4px;
+    background: rgba(0, 0, 0, 0.1)
+}
+
+#lyjl .j-svg-ico24:hover,
+#lyjl .j-svg-ico18:hover {
+    background: rgba(0, 0, 0, 0.15)
+}
+
+#lyjl .j-svg {
+    stroke-width: 1.5px;
+    stroke: #666
+}
+
+#lyjl .j-svg-0 {
+    stroke-width: 1.5px;
+    stroke: #666
+}
+
+#lyjl .j-svg-1 {
+    stroke-width: 1.5px;
+    stroke: #f00
+}
+
+#lyjl .j-svg-2 {
+    stroke-width: 1.5px;
+    stroke: #0077b5
+}
+
+#lyjl .j-svg-ico:hover .j-svg-bg {
+    fill: #0077b5
+}
+
+#lyjl .j-svg-bg {
+    fill: #666
+}
+
+#lyjl .j-paging-box {
+    text-align: center;
+    padding: 10px 0;
+    display: none;
+    margin: 6px auto
+}
+
+#lyjl .j-paging-box a {
+    padding: 4px 6px;
+    cursor: pointer
+}
+
+#lyjl .j-paging {
+    border: 1px solid #999;
+    color: #999;
+    margin: 0 4px
+}
+
+#lyjl .j-paging:hover {
+    border: 1px solid #0077b5;
+    color: #0077b5
+}
+
+#lyjl .j-curpage {
+    text-decoration: none;
+    color: #0077b5;
+    margin: 0 4px
+}
+
+#lyjl .j-explain-box {
+    padding: 12px
+}
+
+#lyjl .j-explain-box a {
+    line-height: 36px;
+    text-decoration: underline
+}
+
+#lyjl .j-login-box {
+    position: absolute;
+    padding: 24px 36px 12px 36px;
+    border-radius: 4px;
+    text-align: center
+}
+
+#lyjl .j-login-box>div {
+    margin: 8px 0
+}
+
+#lyjl .j-logo {
+    width: 100px;
+    height: 23px;
+    background-image: url('https://p9.itc.cn/images02/20200929/d92013c005dc43e9ad1066fe69f89379.png');
+    background-size: 100px 23px;
+    margin: auto
+}
+
+#lyjl .j-login-box input {
+    padding: 6px;
+    width: 200px;
+    height: 32px;
+    border: 1px solid #ccc;
+    text-align: left
+}
+
+#lyjl .j-login-btn {
+    width: 200px;
+    height: 32px;
+    padding: 6px
+}
+
+#lyjl .j-dialog {
+    position: absolute;
+    z-index: 99999999;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    display: none
+}
+
+#lyjl .j-prompt-box {
+    position: absolute;
+    width: 75%
+}
+
+#lyjl .j-prompt-title {
+    padding: 4px 6px;
+    height: 32px
+}
+
+#lyjl .j-prompt-title p {
+    color: #fff;
+    line-height: 24px
+}
+
+#lyjl .j-title-svg {
+    stroke-width: 2px;
+    stroke: #fff
+}
+
+#lyjl .j-prompt-cont {
+    text-align: center;
+    margin: 16px auto 12px auto
+}
+
+#lyjl .j-prompt-cont textarea {
+    height: 320px;
+    width: 94%;
+    border: 1px solid #ccc;
+    resize: none;
+    padding: 6px;
+    overflow-y: auto
+}
+
+#lyjl .j-prompt-cont input[type="text"] {
+    border: 1px solid #ccc;
+    resize: none;
+    padding: 6px;
+    text-align: left
+}
+
+#lyjl .j-line-box {
+    padding: 8px;
+    margin: auto 4px;
+    border-bottom: .5px solid #e6e9ec
+}
+
+#lyjl .j-line-box:hover {
+    background: #f5f5f5
+}
+
+#lyjl .j-prompt-ctrl {
+    width: 96%;
+    text-align: right;
+    margin: 6px auto 18px auto
+}
+
+#lyjl .j-prompt-ctrl button {
+    width: 100px
+}
+
+#lyjl .j-confirm-box {
+    position: absolute;
+    width: 260px;
+    background: #fff;
+    padding: 12px 24px
+}
+
+#lyjl .j-confirm-box button {
+    margin: auto 6px
+}
+
+#lyjl .j-marg {
+    margin: 12px 0
+}
+
+#lyjl .j-point-out {
+    position: absolute;
+    z-index: 999999999;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.6);
+    text-align: center;
+    color: #fff;
+    border-radius: 4px
+}
+
+#lyjl .j-more-option {
+    border: 1px #ddd solid;
+    margin: 8px;
+    padding: 12px;
+    background: #fcfcfc
+}
+
+#lyjl .j-more-option:hover {
+    border: 1px #999 solid
+}
+
+#lyjl .j-more-option img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-left: 0;
+    margin-right: 0
+}
+
+#lyjl .j-more-option h1 {
+    font-size: 16px
+}
+
+#lyjl .j-more-img {
+    width: 10%
+}
+
+#lyjl .j-more-desc {
+    width: 88%
+}
+
+#lyjl .j-more-btn {
+    width: 20%
+}
+
+#j_more a {
+    text-decoration: none
+}
+
+#j_more a:link {
+    color: #000
+}
+
+#j_more a:visited {
+    color: #000
+}
+
+#j_more a:hover {
+    color: #000
+}
+
+#j_more a:active {
+    color: #000
+}
+
+#lyjl .j-tab {
+    width: 100%;
+    background: #fff;
+    border-collapse: collapse;
+    border-spacing: 0;
+    text-align: center
+}
+
+#lyjl .j-tab thead tr {
+    background: #e7f1fe
+}
+
+#lyjl #j_tab_msg tbody {
+    max-height: 200px
+}
+
+#lyjl .j-tab td,
+#lyjl .j-tab th {
+    padding: 6px 0;
+    height: 12px;
+    border-left: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0
+}
+
+#lyjl .j-tab tr:nth-child(even) {
+    background: #f5f5f5
+}
+
+#lyjl .j-tab tbody tr:hover {
+    background-color: #fffff5
+}
+
+#lyjl .j-num {
+    margin: 6px;
+    padding: 6px;
+    border-bottom: .5px solid #e6e9ec;
+    color: #0077b5
+}
+
+.j-gdialog {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999999999;
+    background: rgba(0, 0, 0, 0.5)
+}
+
+#j_statu_dialog .j-statu-dialog {
+    position: absolute;
+    right: 72px;
+    bottom: 140px;
+    text-align: center;
+    background: #fff
+}
+
+#j_statu_dialog .j-dialog-title {
+    color: #fff;
+    padding: 6px
+}
+
+#j_statu_dialog .j-dialog-title h3,
+#j_statu_dialog .j-dialog-title p {
+    color: #fff;
+    line-height: 18px
+}
+
+#j_statu_dialog .j-statu-content {
+    padding: 12px 20px
+}
+
+#j_statu_dialog .j-statu-content p {
+    line-height: 20px
+}
+
+#j_statu_dialog .j-statu-content button {
+    margin: 19px auto
+}
+
+#j_statu_dialog .j-statu-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50px;
+    border: 2px solid #0077b5
+}
+
+@-webkit-keyframes rotation {
+    from {
+        -webkit-transform: rotate(0deg)
+    }
+
+    to {
+        -webkit-transform: rotate(360deg)
+    }
+}
+
+#j_statu_dialog .rotation {
+    -webkit-transform: rotate(360deg);
+    animation: rotation 3s linear infinite;
+    -moz-animation: rotation 3s linear infinite;
+    -webkit-animation: rotation 3s linear infinite;
+    -o-animation: rotation 3s linear infinite
+}
+
+#j_statu_dialog #j_delayed_desc {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0
+}
+
+#j_statu_dialog #j_stop_action {
+    width: 100%
+}
+
+#j_statu_dialog .j-warn {
+    font-size: 18px;
+    color: #fff;
+    margin: auto;
+    width: 400px;
+    text-align: center;
+    margin-top: 200px
+}
+
+#lyjl .j-detail-box {
+    position: absolute;
+    padding: 24px;
+    border-radius: 4px;
+    background-color: #fff;
+    width: 70%
+}
+
+#lyjl .j-detail-box div {
+    padding: 2px
+}
+
+#lyjl .j-detail-box h2 {
+    color: #0077b5;
+    text-align: left
+}
+
+#lyjl .j-detail-box span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    max-width: 270px
+}
+
+#lyjl .j-detail-box font {
+    font-weight: bold
+}
+
+#lyjl .j-detail-box .j-about {
+    max-height: 100px;
+    overflow-y: auto
+}
+
+#lyjl .j-detail-box .j-about p {
+    word-break: break-all
+}
+
+#lyjl .j-bind-box {
+    position: absolute;
+    width: 60%
+}
+
+#lyjl .j-bind-cont {
+    margin: 12px 36px 36px 36px
+}
+
+#lyjl .j-bind-box img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid #d3d3d3
+}
+
+#lyjl .j-bind {
+    border-bottom: .5px #d3d3d3 solid;
+    padding: 6px
+}
+
+#lyjl .j-bind-name {
+    margin: 10px
+}
+
+#lyjl .j-bind-action {
+    margin: 12px
+}
+
+#lyjl .j-bind-note {
+    margin-top: 12px;
+    color: #999
+}
+
+#lyjl .j-customer {
+    width: 100%
+}

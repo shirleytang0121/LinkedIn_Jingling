@@ -1,0 +1,54 @@
+﻿{
+    "name": "领英精灵",
+    "version": "10.1.0",
+    "manifest_version": 2,
+    "description": "领英精灵是针对领英平台研发的工具，具有好友分组管理、导出好友资料、批量加好友、批量群发消息、批量撤回邀请等功能，是Linkedin人士必备工具。",
+    "icons": {
+        "16": "img/icon16.png",
+        "48": "img/icon48.png",
+        "128": "img/icon128.png"
+    },
+    "browser_action": {
+        "default_title": "领英精灵",
+        "default_icon": "img/icon16.png",
+        "default_popup": "html/home.html"
+    },
+    "background": {
+        "scripts": ["scripts/jquery-3.3.1.min.js","scripts/background.js"]
+    },
+    "content_scripts": [
+        {
+            "js": ["scripts/contentScript.js"],
+            "matches": [
+                "*://*.linkedin.com/*",
+                "*://*.linkedin.cn/*"
+            ],
+            "run_at": "document_start"
+        },
+        {
+            "js": ["scripts/jquery-3.3.1.min.js", "scripts/base.js"],
+            "matches": [
+                "*://*.linkedin.com/*",
+                "*://*.linkedin.cn/*"
+            ],
+            "exclude_matches": [
+                "*://*/*help*",
+                "*://*/*psettings*",
+                "*://*/*premium*"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "permissions": [
+        "tabs",
+        "notifications",
+        "webRequest",
+        "webRequestBlocking",
+        "storage",
+        "http://*/*",
+        "https://*/*",
+        "http://localhost:5000/",
+        "https://localhost:5000/"
+    ]
+}
