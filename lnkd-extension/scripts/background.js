@@ -204,7 +204,7 @@ function JlHttp(tabid, url, action, data, tag, other) {
       var account = "18969306212"
       var my_urn = "ACoAACtyFm0BW2P4KhWCCscwpcsx2m71ROWP4tg"
       var loginCode =  "XAGMW1"
-      if (action in ["getMes", "getLine", "getMesAddFriend", "saveConnectRecord", "saveUrl"]){
+      if (action in ["getMes", "getLine", "getMesAddFriend", "saveConnectRecord", "saveUrl", "getInviteQueue", "addInviteQueue", "removeInvite", "login"]){
         var url = String("http://localhost:5000/api/messages");//String("http://localhost:5000/api/messages");
       } else{
         var url = String("http://localhost:5000/api/messages");//String("http://www.linkedinjl.com/actionten");
