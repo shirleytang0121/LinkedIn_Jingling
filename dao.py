@@ -127,3 +127,7 @@ class DAO:
                 query += f" WHERE {' AND '.join(where_clauses)}"
             return self.execute_query(query, tuple(values))
         return self.execute_query(query)
+    
+    def execute_alter_table(self, query):
+        return self.execute_query(query)
+

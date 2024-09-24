@@ -227,28 +227,92 @@ def handle_messages():
             return format_response(False, tag=data.get('tag', ''))
 
     if data['action'] == 'saveConnectRecord':
-        account = data['account']
-        my_urn = data['my_urn']
-        websites = data['data']
-        tag = data['tag']
-        status = data['other']
+        try:
+            account = data['account']
+            my_urn = data['my_urn']
+            linkedin_id = data['data']
+            tag = data['tag']
+            status = data['other']
+            # 1. fetch user_id condition
+            user_id = get_user_id(dao, account, my_urn)
+            
+            # 2. judge the linkedin id/urn type
+            if tag == 'line':
+                update_data = {'status': status}
+                conditions = {
+                    'user_id': user_id,
+                    'websites': linkedin_id,
+                    'type': tag
+                }
+                success, error = dao.update('linkedin_connect', update_data, conditions)
+            elif tag == 'invite':
+                update_data = {'status': status}
+                conditions = {
+                    'user_id': user_id,
+                    'urn': linkedin_id,
+                    'type': tag
+                }
+                success, error = dao.update('linkedin_connect', update_data, conditions)
+            else:
+                if linkedin_id.startswith("ACoAA"):
+                    insert_data = {
+                        'user_id': user_id,
+                        'urn': linkedin_id,
+                        'type': tag,
+                        'status': status,
+                    }
+                else:
+                    insert_data = {
+                        'user_id': user_id,
+                        'websites': linkedin_id,
+                        'type': tag,
+                        'status': status,
+                    }
+                success, error = dao.insert('linkedin_connect', insert_data)
+            
+            return json.dumps({"result":1})
+        except:
+            return json.dumps({"result":0})
         
-        # 1. fetch user_id condition
-        user_id = get_user_id(dao, account, my_urn)
-                
-        update_data = {'status': status, 'type': tag}
-        conditions = {
-            'user_id': user_id,
-            'websites': websites
-        }
-        success, error = dao.update('linkedin_connect', update_data, conditions)
-        return format_response(success)
-
     if data['action'] == 'saveUrl':
         account = data['account']
         my_urn = data['my_urn']
         print('saveUrl')
-        return format_response(True, message="URL saved successfully")
+        return json.dumps({'result':1})
+    
+    if data['action'] == 'saveRecallRecord':
+        account = data['account']
+        my_urn = data['my_urn']
+        recall_num = data['my_urn']
+        print('saveRecallRecord')
+        return json.dumps({'result':1})
+    
     
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=False)
+    
+    
+    
+    
+    
+    
+    # # Add Column
+    # alter_query = """
+    # ALTER TABLE linkedin_connect
+    # ADD COLUMN urn VARCHAR(255) DEFAULT NULL;
+    # """
+    # result, error = dao.execute_alter_table(alter_query)
+
+    # if error:
+    #     print(f"Error adding urn column: {error}")
+    # else:
+    #     print("Successfully added urn column to message table")
+        
+    # # Drop Column
+    # alter_query = "ALTER TABLE message DROP COLUMN urn;"
+    # result, error = dao.execute_alter_table(alter_query)
+
+    # if error:
+    #     print(f"Error dropping urn column: {error}")
+    # else:
+    #     print("Successfully dropped urn column from message table")
