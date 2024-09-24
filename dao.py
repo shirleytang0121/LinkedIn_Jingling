@@ -50,13 +50,43 @@ class DAO:
             query += f" OFFSET {offset}"
 
         return self.execute_query(query, tuple(conditions.values()))
-
+    
+    def find_with_custom_condition(self, table, conditions, custom_condition, columns="*"):
+        query = f"SELECT {columns} FROM {table} WHERE "
+        query += " AND ".join([f"{key} = %s" for key in conditions.keys()])
+        query += f" AND {custom_condition}"
+        
+        values = list(conditions.values())
+        return self.execute_query(query, tuple(values))
+    
     def insert(self, table, data):
-        columns = ", ".join(data.keys())
-        placeholders = ", ".join(["%s"] * len(data))
-        query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
-        return self.execute_query(query, tuple(data.values()))
+        if not data:
+            return 0, "No data provided"
 
+        if isinstance(data, list):
+            # Bulk insert
+            if not all(isinstance(item, dict) for item in data):
+                return 0, "All items must be dictionaries for bulk insert"
+            
+            columns = ", ".join(data[0].keys())
+            placeholders = ", ".join(["%s"] * len(data[0]))
+            placeholders = f"({placeholders})"
+            placeholders = ", ".join([placeholders] * len(data))
+            query = f"INSERT INTO {table} ({columns}) VALUES {placeholders}"
+            
+            values = [val for item in data for val in item.values()]
+            return self.execute_query(query, values)
+        
+        elif isinstance(data, dict):
+            # Single insert
+            columns = ", ".join(data.keys())
+            placeholders = ", ".join(["%s"] * len(data))
+            query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+            return self.execute_query(query, tuple(data.values()))
+        
+        else:
+            return 0, "Data must be a dictionary or a list of dictionaries"
+   
     def update(self, table, data, conditions):
         set_clause = ", ".join([f"{key} = %s" for key in data.keys()])
         where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
@@ -71,7 +101,15 @@ class DAO:
         where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
         query = f"DELETE FROM {table} WHERE {where_clause}"
         return self.execute_query(query, tuple(conditions.values()))
-
+    
+    def bulk_delete(self, table, conditions, value_list, value_column):
+        placeholders = ', '.join(['%s'] * len(value_list))
+        where_clause = ' AND '.join([f"{key} = %s" for key in conditions.keys()])
+        query = f"DELETE FROM {table} WHERE {where_clause} AND {value_column} IN ({placeholders})"
+        
+        values = list(conditions.values()) + value_list
+        return self.execute_query(query, tuple(values))
+    
     def count(self, table, conditions=None):
         query = f"SELECT COUNT(*) as total FROM {table}"
         if conditions:

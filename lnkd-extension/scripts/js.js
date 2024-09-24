@@ -3638,18 +3638,18 @@ function RemoveLine() {
   chrome.storage.sync.get({ account: "", my_urn: "" }, function (b) {
     var e = String(b.account);
     var c = String(b.my_urn);
-    if (!e) {
-      ShowLoginDialog();
-      PointOut("请先登录领英精灵账号");
-      return false;
-    }
-    if (!c) {
-      JlConfirm("没有绑定Linkedin账号，请先绑定Linkedin账号，确定要绑定吗？");
-      $("#j_ok").click(function () {
-        BindLinkedin(true);
-      });
-      return false;
-    }
+    // if (!e) {
+    //   ShowLoginDialog();
+    //   PointOut("请先登录领英精灵账号");
+    //   return false;
+    // }
+    // if (!c) {
+    //   JlConfirm("没有绑定Linkedin账号，请先绑定Linkedin账号，确定要绑定吗？");
+    //   $("#j_ok").click(function () {
+    //     BindLinkedin(true);
+    //   });
+    //   return false;
+    // }
     var d = $("input[name='lineAdd']:checkbox:checked").length;
     if (d == 0) {
       PointOut("请先选择人脉");
