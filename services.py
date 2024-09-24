@@ -17,11 +17,23 @@ def handle_messages():
 
     if data['action'] == 'getMes':
         try:
+            # 1. fetch user_id condition
             account = data['account']
             my_urn = data['my_urn']
+            conditions = {'apn_user_id': account, 'linkedin_urn': my_urn}
+            users, error = dao.find('user', conditions, columns='id')
+            if error:
+                return format_response(False)
+            if not users:
+                return format_response(False)
+            user_id = users[0]['id']
+            conditions = {'user_id': user_id}
             
-            conditions = {'account': account, 'my_urn': my_urn}
-            messages, error = dao.find('Message_Table', conditions, columns='mess_id, mess, is_select')
+            # 2. search results
+            messages, error = dao.find('message', conditions, columns='id, mess, is_select')
+            # Convert 'id' to 'mess_id' and ensure it's a string
+            for message in messages:
+                message['mess_id'] = str(message.pop('id'))
             
             if error:
                 return format_response(False)
@@ -36,14 +48,22 @@ def handle_messages():
             mess_id = data['data']
             is_select = data['other']
 
+            # 1. fetch user_id condition
+            conditions = {'apn_user_id': account, 'linkedin_urn': my_urn}
+            users, error = dao.find('user', conditions, columns='id')
+            if error:
+                return format_response(False)
+            if not users:
+                return format_response(False)
+            user_id = users[0]['id']
             update_data = {'is_select': is_select}
             conditions = {
-                'account': account,
-                'my_urn': my_urn,
-                'mess_id': mess_id
+                'user_id': user_id,
+                'id': mess_id
             }
+            print(conditions)
 
-            success, error = dao.update('Message_Table', update_data, conditions)
+            success, error = dao.update('message', update_data, conditions)
             if error:
                 print(f"Error in updateMessageIsSelect: {error}")
                 return json.dumps({"result":0,"tidings_id":"","action":is_select})
@@ -56,54 +76,65 @@ def handle_messages():
         try:
             account = data['account']
             my_urn = data['my_urn']
-            mess_id = data['data']
-            is_select = data['other']
-
+            is_select = data['data']
+            total_message=data.get('other', None)
+            
+            # 1. fetch user_id condition
+            conditions = {'apn_user_id': account, 'linkedin_urn': my_urn}
+            users, error = dao.find('user', conditions, columns='id')
+            if error:
+                return format_response(False)
+            if not users:
+                return format_response(False)
+            user_id = users[0]['id']
+            
             update_data = {'is_select': is_select}
             conditions = {
-                'account': account,
-                'my_urn': my_urn,
-                'mess_id': mess_id
+                'user_id': user_id
             }
-            success, error = dao.update('Message_Table', update_data, conditions)
+            success, error = dao.update('message', update_data, conditions)
             if error:
                 print(f"Error in updateMessageIsSelect: {error}")
-                return json.dumps({"result":0,"tidings_id":"","action":is_select})
-            return json.dumps({"result":1,"tidings_id":mess_id,"action":is_select})
+                return json.dumps({"result":0,"action":is_select,"count":total_message})
+            return json.dumps({"result":1,"action":is_select,"count":total_message})
         except Exception as e:
             print(f"Error in updateMessageIsSelect: {str(e)}")
-            return json.dumps({"result":0,"tidings_id":"","action":is_select})
+            return json.dumps({"result":0,"action":is_select,"count":total_message})
 
     if data['action'] == 'getLine':
         try:
+            # 1. fetch user_id condition
             account = data['account']
             my_urn = data['my_urn']
+            conditions = {'apn_user_id': account, 'linkedin_urn': my_urn}
+            users, error = dao.find('user', conditions, columns='id')
+            if error:
+                return format_response(False)
+            if not users:
+                return format_response(False)
+            user_id = users[0]['id']
+            
             page = int(data.get('data', 1))
             items_per_page = 100
 
-            conditions = {
-                'account': account,
-                'my_urn': my_urn
-            }
-            
             # 使用 OR 条件来处理 NULL 和空字符串
             query = """
             SELECT COUNT(*) as total 
-            FROM LinkedIn_Url_Table 
-            WHERE account = %s AND my_urn = %s AND (status IS NULL OR status = '')
+            FROM linkedin_connect 
+            WHERE user_id = %s AND (status IS NULL OR status = '')
             """
-            total, _ = dao.execute_query(query, (account, my_urn))
+            total, _ = dao.execute_query(query, (user_id))
             total = total[0]['total'] if total else 0
 
             offset = (page - 1) * items_per_page
             query = """
-            SELECT id, websites 
-            FROM LinkedIn_Url_Table 
-            WHERE account = %s AND my_urn = %s AND (status IS NULL OR status = '')
+            SELECT user_id, websites 
+            FROM linkedin_connect 
+            WHERE user_id = %s AND (status IS NULL OR status = '')
             LIMIT %s OFFSET %s
             """
-            urls, _ = dao.execute_query(query, (account, my_urn, items_per_page, offset))
-            
+            urls, _ = dao.execute_query(query, (user_id, items_per_page, offset))
+
             return format_response(True, urls, total=total, count=items_per_page, page=page)
         except Exception as e:
             print(f"Error in handle_messages: {str(e)}")
@@ -115,13 +146,21 @@ def handle_messages():
             my_urn = data['my_urn']
             tag = data['tag']
             is_select = data['other']
-
+            
+            # 1. fetch user_id condition
+            conditions = {'apn_user_id': account, 'linkedin_urn': my_urn}
+            users, error = dao.find('user', conditions, columns='id')
+            if error:
+                return format_response(False)
+            if not users:
+                return format_response(False)
+            user_id = users[0]['id']
+            
             conditions = {
-                'account': account,
-                'my_urn': my_urn,
-                'is_select': is_select
+                'user_id': user_id,
+                'is_select': "1"
             }
-            messages, error = dao.find('Message_Table', conditions, columns='mess')
+            messages, error = dao.find('message', conditions, columns='mess')
             if error:
                 return format_response(False, tag=tag)
 
@@ -138,14 +177,22 @@ def handle_messages():
         websites = data['data']
         tag = data['tag']
         status = data['other']
-
-        update_data = {'status': status, 'tag': tag}
+        
+        # 1. fetch user_id condition
+        conditions = {'apn_user_id': account, 'linkedin_urn': my_urn}
+        users, error = dao.find('user', conditions, columns='id')
+        if error:
+            return format_response(False)
+        if not users:
+            return format_response(False)
+        user_id = users[0]['id']
+        
+        update_data = {'status': status, 'type': tag}
         conditions = {
-            'account': account,
-            'my_urn': my_urn,
+            'user_id': user_id,
             'websites': websites
         }
-        success, error = dao.update('LinkedIn_Url_Table', update_data, conditions)
+        success, error = dao.update('linkedin_connect', update_data, conditions)
         return format_response(success)
 
     if data['action'] == 'saveUrl':
