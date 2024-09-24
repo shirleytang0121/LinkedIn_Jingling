@@ -3638,18 +3638,18 @@ function RemoveLine() {
   chrome.storage.sync.get({ account: "", my_urn: "" }, function (b) {
     var e = String(b.account);
     var c = String(b.my_urn);
-    if (!e) {
-      ShowLoginDialog();
-      PointOut("请先登录领英精灵账号");
-      return false;
-    }
-    if (!c) {
-      JlConfirm("没有绑定Linkedin账号，请先绑定Linkedin账号，确定要绑定吗？");
-      $("#j_ok").click(function () {
-        BindLinkedin(true);
-      });
-      return false;
-    }
+    // if (!e) {
+    //   ShowLoginDialog();
+    //   PointOut("请先登录领英精灵账号");
+    //   return false;
+    // }
+    // if (!c) {
+    //   JlConfirm("没有绑定Linkedin账号，请先绑定Linkedin账号，确定要绑定吗？");
+    //   $("#j_ok").click(function () {
+    //     BindLinkedin(true);
+    //   });
+    //   return false;
+    // }
     var d = $("input[name='lineAdd']:checkbox:checked").length;
     if (d == 0) {
       PointOut("请先选择人脉");
@@ -5302,22 +5302,22 @@ function RecallBatch() {
       PointOut("请选择要撤回的邀请");
       return false;
     }
-    if (parseInt(a.level) < 1 && parseInt(a.trial) < 1) {
-      ShowUpgrade(
-        "试用期已过",
-        "试用会员可试用一周，您的试用期已过，请升级会员使用",
-        "立即升级"
-      );
-      return false;
-    }
+    // if (parseInt(a.level) < 1 && parseInt(a.trial) < 1) {
+    //   ShowUpgrade(
+    //     "试用期已过",
+    //     "试用会员可试用一周，您的试用期已过，请升级会员使用",
+    //     "立即升级"
+    //   );
+    //   return false;
+    // }
     var b = parseInt(a.r_today_num) + c;
-    if (parseInt(a.level) == 0 && b > 100) {
-      ShowUpgrade(
-        "试用名额用完",
-        "您是试用会员，每天有100个批量撤回名额，你的名额已用完，升级会员可无限撤回。"
-      );
-      return false;
-    }
+    // if (parseInt(a.level) == 0 && b > 100) {
+    //   ShowUpgrade(
+    //     "试用名额用完",
+    //     "您是试用会员，每天有100个批量撤回名额，你的名额已用完，升级会员可无限撤回。"
+    //   );
+    //   return false;
+    // }
     JlConfirm("确定要撤回选择的 " + c + " 个邀请吗？", "确定");
     $("#j_ok").on("click", function () {
       var e = [];
