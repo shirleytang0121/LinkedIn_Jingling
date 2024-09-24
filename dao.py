@@ -75,7 +75,17 @@ class DAO:
     def count(self, table, conditions=None):
         query = f"SELECT COUNT(*) as total FROM {table}"
         if conditions:
-            where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
-            query += f" WHERE {where_clause}"
-            return self.execute_query(query, tuple(conditions.values()))
+            where_clauses = []
+            values = []
+            for key, value in conditions.items():
+                if key == 'status' and (value is None or value == ''):
+                    where_clauses.append("(status IS NULL OR status = '')")
+                elif value is None:
+                    where_clauses.append(f"{key} IS NULL")
+                else:
+                    where_clauses.append(f"{key} = %s")
+                    values.append(value)
+            if where_clauses:
+                query += f" WHERE {' AND '.join(where_clauses)}"
+            return self.execute_query(query, tuple(values))
         return self.execute_query(query)

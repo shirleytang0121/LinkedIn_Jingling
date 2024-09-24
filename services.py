@@ -117,14 +117,9 @@ def handle_messages():
             page = int(data.get('data', 1))
             items_per_page = 100
 
-            # 使用 OR 条件来处理 NULL 和空字符串
-            query = """
-            SELECT COUNT(*) as total 
-            FROM linkedin_connect 
-            WHERE user_id = %s AND (status IS NULL OR status = '')
-            """
-            total, _ = dao.execute_query(query, (user_id))
-            total = total[0]['total'] if total else 0
+            status_conditions = {'user_id': user_id, 'status': None}
+            count_result = dao.count('linkedin_connect', status_conditions)
+            total = count_result[0][0]['total'] if count_result else 0
 
             offset = (page - 1) * items_per_page
             query = """
@@ -134,11 +129,11 @@ def handle_messages():
             LIMIT %s OFFSET %s
             """
             urls, _ = dao.execute_query(query, (user_id, items_per_page, offset))
-
-            return format_response(True, urls, total=total, count=items_per_page, page=page)
+            #print(json.dumps({"total": str(total), "result": 1, "data": urls, "count": 100, "page": str(page)}))
+            return json.dumps({"total": str(total), "result": 1, "data": urls, "count": 100, "page": str(page)})
         except Exception as e:
             print(f"Error in handle_messages: {str(e)}")
-            return format_response(False, error=str(e))
+            return json.dumps({"total": "0", "result": 0, "data": [], "count": 100, "page": str(page),"error": str(e)})
 
     if data['action'] == 'getMesAddFriend':
         try:
