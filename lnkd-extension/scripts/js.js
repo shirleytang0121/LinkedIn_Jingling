@@ -590,15 +590,17 @@ function AppendWindow() {
 }
 
 function ShowOrHideWindow() {
-  // chrome.storage.sync.get({ option: "addfriend" }, function (a) {
-  $("#j_lyjl_window").slideToggle(200);
-  $(".j-lyjl-bg").slideToggle(0);
-  if ($("#j_lyjl_window").is(":hidden")) {
-    ShowOption(String(a.option));
-    // CheckLYZC();
-    // InitMember();
-  }
-  // });
+  chrome.storage.sync.get({
+      option: "addfriend"
+  }, function(a) {
+      if ($("#j_lyjl_window").is(":hidden")) {
+          ShowOption(String(a.option));
+          // InitMember();
+          // CheckLYZC();
+      }
+      $("#j_lyjl_window").slideToggle(200);
+      $(".j-lyjl-bg").slideToggle(0)
+  })
 }
 
 function CheckLYZC() {
