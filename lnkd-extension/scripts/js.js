@@ -146,7 +146,6 @@ function BindEven() {
   $("body").on("click", "#j_addInviteJlComm", AddInviteJlComm);
   $("body").on("click", "#j_showLine", ShowLine);
   $("body").on("click", "#j_newLine", NewLine);
-  $("body").on("click", "#j_sendmine", SendMine);
   $("body").on("click", "input[name='selectAllLine']", SelectAllLine);
   $("body").on("click", "#j_lineAdd_paging .j-paging", GetLineSomePage);
   $("body").on("click", "#j_lineAdd_paging .j-jump-btn", JumpLine);
@@ -303,6 +302,7 @@ function BindEven() {
   $("body").on("change", "#a_max_speed", SetAddMaxSpeed);
   $("body").on("change", "#a_limit", SetAddLimit);
   $("body").on("change", "#j_i_count", SetInviteCount);
+  $("body").on("click", "#j_senior", SetSenior);
   $("body").on("change", "#d_min_speed", SetDigMinSpeed);
   $("body").on("change", "#d_max_speed", SetDigMaxSpeed);
   $("body").on("change", "#d_limit", SetDigLimit);
@@ -332,27 +332,6 @@ chrome.runtime.onMessage.addListener(function (c, b, a) {
     console.log('c.result', c.result);
     if (c.result == 1 && c.data) {
       var d = JSON.parse(c.data);
-      // var d = {
-      //   data: [
-      //     {
-      //       is_select: "0",
-      //       mess: "Hi [FirstName], this is recruiter Yuxin from intellipro, nice to meet you!",
-      //       mess_id: "1726589708150"
-      //     },
-      //     {
-      //       is_select: "0",
-      //       mess: "Hello [FirstName], this is recruiter xxx from Intellipro.",
-      //       mess_id: "1726517773687"
-      //     },
-      //     {
-      //       is_select: "0",
-      //       mess: "Hi, I wanted to reach out because I think you may fit this Sales Senior Manager & Sales Director (Sea Freight Forwarding) role with a leading parallel-import vehicle supplier, focused on international",
-      //       mess_id: "1724453711450"
-      //     }
-      //   ],
-      //   result: "1",
-      //   tag: ""
-      // };
       console.log('d value: '+ d);
       console.log('d value: ' + JSON.stringify(d));
       // 或者，为了更好的可读性：
@@ -460,9 +439,6 @@ chrome.runtime.onMessage.addListener(function (c, b, a) {
             case "newLine":
               NewLineResult(d);
               break;
-            // case "SendMine":
-            //   SendMine(d);
-            //   break;
             case "getLine":
               GetLineResult(d);
               break;
@@ -1233,10 +1209,14 @@ function StartConnectInvite() {
       Friend.push(b);
     });
     if (Friend.length > 0) {
-      JlHttp("getMesAddFriend", "", "invite", "");
-    } else {
-      PointOut("没有选择要加的人，请重新选择");
-    }
+      chrome.storage.sync.get({
+          senior: false
+      }, function(b) {
+          JlHttp("getMesAddFriend", "", "invite", b.senior)
+      })
+  } else {
+      PointOut("没有选择要加的人，请重新选择")
+  }
   }
 }
 function ConnectInvite() {
@@ -1451,7 +1431,11 @@ function ShowMes() {
   GetMes(1);
 }
 function GetMes() {
-  JlHttp("getMes", "", "", "");
+  chrome.storage.sync.get({
+      senior: false
+  }, function(a) {
+      JlHttp("getMes", "", "", a.senior)
+  })
 }
 function GetMesResult(c) {
   console.log('GetMesResult c'+c);
@@ -2818,10 +2802,14 @@ function StartConnectSearch() {
       Friend.push(b);
     });
     if (Friend.length > 0) {
-      JlHttp("getMesAddFriend", "", "search", "");
-    } else {
-      PointOut("没有选择要加的人，请重新选择");
-    }
+      chrome.storage.sync.get({
+          senior: false
+      }, function(b) {
+          JlHttp("getMesAddFriend", "", "search", b.senior)
+      })
+  } else {
+      PointOut("没有选择要加的人，请重新选择")
+  }
   }
 }
 function AddInviteSearch() {
@@ -3098,10 +3086,14 @@ function StartConnectLyComm() {
       Friend.push(b);
     });
     if (Friend.length > 0) {
-      JlHttp("getMesAddFriend", "", "lyComm", "");
-    } else {
-      PointOut("没有选择要加的人，请重新选择");
-    }
+      chrome.storage.sync.get({
+          senior: false
+      }, function(b) {
+          JlHttp("getMesAddFriend", "", "lyComm", b.senior)
+      })
+  } else {
+      PointOut("没有选择要加的人，请重新选择")
+  }
   }
 }
 function ConnectLyComm() {
@@ -3273,10 +3265,14 @@ function StartConnectJlComm() {
       Friend.push(b);
     });
     if (Friend.length > 0) {
-      JlHttp("getMesAddFriend", "", "jlComm", "");
-    } else {
-      PointOut("没有选择要加的人，请重新选择");
-    }
+      chrome.storage.sync.get({
+          senior: false
+      }, function(b) {
+          JlHttp("getMesAddFriend", "", "jlComm", b.senior)
+      })
+  } else {
+      PointOut("没有选择要加的人，请重新选择")
+  }
   }
 }
 function ConnectJlComm() {
@@ -3710,10 +3706,14 @@ function StartConnectLine() {
         Friend.push(b);
       });
       if (Friend.length > 0) {
-        JlHttp("getMesAddFriend", "", "line", "");
-      } else {
-        PointOut("没有选择要加的人，请重新选择");
-      }
+        chrome.storage.sync.get({
+            senior: false
+        }, function(b) {
+            JlHttp("getMesAddFriend", "", "line", b.senior)
+        })
+    } else {
+        PointOut("没有选择要加的人，请重新选择")
+    }
     }
   );
 }
@@ -3740,84 +3740,6 @@ const updates = {
   "Status": "Sent"
 };
 
-
-// function fetchNameValue() {
-//   // return new Promise((resolve, reject) => {
-//   //   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-//   //     chrome.scripting.executeScript({
-//   //       target: { tabId: tabs[0].id },
-//   //       function: function() {
-//   //         // Define the CSS selector to select the image element with specific classes
-//   //         const selector = '.global-nav__primary-link.artdeco-dropdown__trigger.artdeco-dropdown__trigger--placement-bottom.ember-view img';
-//   //         const element = document.querySelector(selector);
-//   //         return element ? element.alt : null; // Return the alt attribute value if the element is found
-//   //       }
-//   //     }, function(result) {
-//   //       const value = result[0].result;
-//   //       resolve(value); // Resolve the Promise with the fetched value
-//   //     });
-//   //   });
-//   // });
-//   var j = getCookie("JSESSIONID");
-//   if (j) {
-//     j = j.replace(/"/g, "");
-//   } else {
-//     PointOut("请确保领英账号已正常登录，请尝试刷新领英页面。");
-//     return false;
-//   }
-//   var b = "/voyager/api/me";
-//   $.ajax({
-//     url: b,
-//     type: "get",
-//     headers: {
-//       Accept: "application/vnd.linkedin.normalized+json+2.1",
-//       "csrf-token": j,
-//       "x-restli-protocol-version": "2.0.0",
-//     },
-//     success: function (q) {
-//       if (q) {
-//         var o = q["included"][0]["firstName"];
-//         var m = q["included"][0]["lastName"];
-//         var n = GetName(o, m);
-//         var p = q["included"][0]["entityUrn"].split(":")[3];
-//         var l = q["included"][0]["publicIdentifier"];
-//         console.log(n);
-//         resolve(n);
-//       } else {
-//         reject("No data found"); // Reject the Promise if 'q' is falsy
-//       }
-//         // if (
-//         //   q["included"][0]["picture"] &&
-//         //   q["included"][0]["picture"]["rootUrl"]
-//         // ) {
-//         //   var k =
-//         //     q["included"][0]["picture"]["rootUrl"] +
-//         //     q["included"][0]["picture"]["artifacts"][3][
-//         //       "fileIdentifyingUrlPathSegment"
-//         //     ];
-//         // } else {
-//         //   var k = "";
-//         // }
-//         // if (p) {
-//         //   chrome.storage.sync.set(
-//         //     { my_urn: [p], name: [n], img: [k], public_id: [l] },
-//         //     function () {}
-//         //   );
-//         //   var r = {
-//         //     my_urn: p,
-//         //     public_id: l,
-//         //     first_name: o,
-//         //     last_name: m,
-//         //     img: k,
-//         //   };
-//         //   r = JSON.stringify(r);
-//         //   JlHttp("bindLinkedin", r, "bind", a);
-//       },
-//       error: function(xhr, status, error) {
-//         reject(error); // Reject the Promise with the error message if the request fails
-//       }
-//     });
-// }
 
 function fetchNameValue() {
   return new Promise((resolve, reject) => {
@@ -3869,207 +3791,6 @@ function randomString(b) {
   return e
 }
 
-// function sendingConnection(template, profileId, JSESSIONID) {
-//   // Generate tracking ID
-//   var trackingId = randomString(22) + "==";
-//   var connectionLink = 'https://www.linkedin.com/voyager/api/growth/normInvitations';
-
-//   var payload = {
-//       "emberEntityName": "growth/invitation/norm-invitation",
-//       "invitee": {
-//           "com.linkedin.voyager.growth.invitation.InviteeProfile": {
-//               "profileId": profileId
-//           }
-//       },
-//       "message": template,
-//       "trackingId": trackingId
-//   };
-
-//   var xhr = new XMLHttpRequest();
-//   xhr.open('POST', connectionLink, true);
-//   xhr.setRequestHeader('Accept', 'application/vnd.linkedin.normalized+json+2.1');
-//   xhr.setRequestHeader('csrf-token', JSESSIONID.replace(/"/g, ""));
-//   xhr.setRequestHeader('content-type', 'application/json; charset=UTF-8');
-//   xhr.setRequestHeader('x-restli-protocol-version', '2.0.0');
-//   xhr.onreadystatechange = function() {
-//       if (xhr.readyState === XMLHttpRequest.DONE) {
-//           if (xhr.status === 201) {
-//               console.log('Success:' + profileId);
-//           } else {
-//               console.error('Error:', xhr.statusText);
-//           }
-//       }
-//   };
-//   xhr.send(JSON.stringify(payload));
-// }
-
-
-// var b = getCookie("JSESSIONID");
-// if (!b) {
-//   StopAction();
-//   setTimeout(function () {
-//     alert("请确保领英账号已正常登录，请尝试刷新领英页面。");
-//   }, 50);
-//   return false;
-// } else {
-//   b = b.replace(/"/g, "");
-// }
-// var f = randomString(22) + "==";
-// var g = RandomTidings("", "");
-// if (g) {
-//   var a = {
-//     emberEntityName: "growth/invitation/norm-invitation",
-//     invitee: {
-//       "com.linkedin.voyager.growth.invitation.InviteeProfile": {
-//         profileId: Friend[0]["public_id"],
-//       },
-//     },
-//     message: g,
-//     trackingId: f,
-//   };
-// } else {
-//   var a = {
-//     emberEntityName: "growth/invitation/norm-invitation",
-//     invitee: {
-//       "com.linkedin.voyager.growth.invitation.InviteeProfile": {
-//         profileId: Friend[0]["public_id"],
-//       },
-//     },
-//     trackingId: f,
-//   };
-// }
-// var d = "/voyager/api/growth/normInvitations";
-// $.ajax({
-//   url: d,
-//   type: "post",
-//   data: JSON.stringify(a),
-//   headers: {
-//     Accept: "application/vnd.linkedin.normalized+json+2.1",
-//     "csrf-token": b,
-//     "content-type": "application/json; charset=UTF-8",
-//     "x-restli-protocol-version": "2.0.0",
-//   },
-//   success: function (i) {
-//     ActionCount++;
-//     var h = parseInt(c.a_today_num) + 1;
-//     $("#j_action_count").text("本次已加：" + ActionCount + "人");
-//     if (h > 100) {
-//       $("#j_today_count").html(
-//         '<font style="color:#f00;">今日已加：' + h + "人</font>"
-//       );
-//     } else {
-//       $("#j_today_count").text("今日已加：" + h + "人");
-//     }
-//     chrome.storage.sync.set({ a_today_num: [h] }, function () {});
-//     JlHttp("saveConnectRecord", Friend[0]["public_id"], "line", 200);
-//   },
-//   error: function (i, k, j) {
-//     JlHttp("saveConnectRecord", Friend[0]["public_id"], "line", i.status);
-//     if (i.status == 429) {
-//       StopAction();
-//       setTimeout(function () {
-//         if (Tidings.length > 0) {
-//           alert("你的领英没有了个性化邀请，请尝试不加邀请消息加人。");
-//         } else {
-//           alert("你的领英达到本周邀请上限，请下周再来加");
-//         }
-//       }, 50);
-//       return false;
-//     }
-//     ActionCount++;
-//     var h = parseInt(c.a_today_num) + 1;
-//     $("#j_action_count").text("本次已加：" + ActionCount + "人");
-//     if (h > 100) {
-//       $("#j_today_count").html(
-//         '<font style="color:#f00;">今日已加：' + h + "人</font>"
-//       );
-//     } else {
-//       $("#j_today_count").text("今日已加：" + h + "人");
-//     }
-//     chrome.storage.sync.set({ a_today_num: [h] }, function () {});
-//   },
-// });
-
-
-// function sendingConnection(template, profileId, JSESSIONID, indexNum) {
-//   return new Promise((resolve, reject) => {
-//     // Generate tracking ID
-//     var trackingId = randomString(22) + "==";
-//     var connectionLink = 'https://www.linkedin.com/voyager/api/growth/normInvitations';
-
-//     var payload = {
-//       "emberEntityName": "growth/invitation/norm-invitation",
-//       "invitee": {
-//         "com.linkedin.voyager.growth.invitation.InviteeProfile": {
-//           "profileId": profileId
-//         }
-//       },
-//       "message": template,
-//       "trackingId": trackingId
-//     };
-
-//     var xhr = new XMLHttpRequest();
-//     xhr.open('POST', connectionLink, true);
-//     xhr.setRequestHeader('Accept', 'application/vnd.linkedin.normalized+json+2.1');
-//     xhr.setRequestHeader('csrf-token', JSESSIONID.replace(/"/g, ""));
-//     xhr.setRequestHeader('content-type', 'application/json; charset=UTF-8');
-//     xhr.setRequestHeader('x-restli-protocol-version', '2.0.0');
-//     xhr.onreadystatechange = function() {
-//       if (xhr.readyState === XMLHttpRequest.DONE) {
-//         if (xhr.status === 201) {
-//           console.log('Success:' + profileId);
-//           PointOut("成功添加第" + (indexNum).toString() + "位候选人：" + profileId); 
-//           resolve(); // Resolve the promise if the request is successful
-//         } else {
-//           PointOut("添加失败第" + (indexNum).toString() + "位候选人：" + profileId); 
-//           console.error('Error:', xhr.statusText);
-//           reject(new Error(xhr.statusText)); // Reject the promise with an error if the request fails
-//         }
-//       }
-//     };
-//     xhr.send(JSON.stringify(payload));
-//   });
-// }
-// function sendingConnection(template, profileId, JSESSIONID, indexNum) {
-//   return new Promise((resolve, reject) => {
-//     // Generate tracking ID
-//     var trackingId = randomString(22) + "==";
-//     var connectionLink = 'https://www.linkedin.com/voyager/api/growth/normInvitations';
-
-//     var payload = {
-//       "emberEntityName": "growth/invitation/norm-invitation",
-//       "invitee": {
-//         "com.linkedin.voyager.growth.invitation.InviteeProfile": {
-//           "profileId": profileId
-//         }
-//       },
-//       "message": template,
-//       "trackingId": trackingId
-//     };
-
-//     $.ajax({
-//       url: connectionLink,
-//       type: "POST",
-//       data: JSON.stringify(payload),
-//       headers: {
-//         Accept: "application/vnd.linkedin.normalized+json+2.1",
-//         "csrf-token": JSESSIONID.replace(/"/g, ""),
-//         "content-type": "application/json; charset=UTF-8",
-//         "x-restli-protocol-version": "2.0.0",
-//       },
-//       success: function (response) {
-//         console.log('Success:' + profileId);
-//         PointOut("成功添加第" + (indexNum).toString() + "位候选人：" + profileId);
-//         resolve(); // Resolve the promise if the request is successful
-//       },
-//       error: function (xhr, textStatus, errorThrown) {
-//         PointOut("添加失败第" + (indexNum).toString() + "位候选人：" + profileId);
-//         console.error('Error:', xhr.statusText);
-//         reject(new Error(xhr.statusText)); // Reject the promise with an error if the request fails
-//       }
-//     });
-//   });
-// }
 function sendingConnection(template, profileId, JSESSIONID, indexNum) {
   return new Promise((resolve, reject) => {
     // Generate tracking ID
@@ -4118,294 +3839,7 @@ function sendingConnection(template, profileId, JSESSIONID, indexNum) {
   });
 }
 
-// error: function (i, k, j) {
-//   JlHttp("saveConnectRecord", Friend[0]["public_id"], "line", i.status);
-//   if (i.status == 429) {
-//     StopAction();
-//     setTimeout(function () {
-//       if (Tidings.length > 0) {
-//         alert("你的领英没有了个性化邀请，请尝试不加邀请消息加人。");
-//       } else {
-//         alert("你的领英达到本周邀请上限，请下周再来加");
-//       }
-//     }, 50);
-//     return false;
-//   }
 
-// function SendMine() {
-//   // Fetch data using fetchNameValue()
-//   fetchNameValue()
-//     .then(name => {
-//       // Use the fetched name to fetch data
-//       return fetchData(name);
-//     })
-//     .then(data => {
-//       // Use the fetched data to update row
-//       const rowId = data.id;
-//       const template = data.Template;
-//       const connectionId = data.connectionId;
-//       // Send LinkedIn connection request
-//       var JSESSIONID = getCookie("JSESSIONID");
-//       if (JSESSIONID) {
-//         JSESSIONID = JSESSIONID.replace(/"/g, "");
-//       } else {
-//         PointOut("请确保领英账号已正常登录，请尝试刷新领英页面。");
-//         return false;
-//       }
-//       console.log(JSESSIONID);
-//       sendingConnection(template, connectionId, JSESSIONID)
-//       // return new Promise((resolve, reject) => {
-//       //   chrome.cookies.getAll(getDetails('getAll'), (cookies) => {
-//       //     var { li_at, JSESSIONID } = getLinkedInCookies(cookies);
-//       //     // const JSESSIONID = getCookie("JSESSIONID");
-//       //     console.log(JSESSIONID)
-//       //     sendingConnection(template, connectionId, JSESSIONID);
-//       //     resolve();
-//       //   });
-//       // })
-//       .then(() => {
-//         // Update the row status to "Sent" if LinkedIn connection request succeeds
-//         return updateRowData(rowId, {"Status": "Sent"});
-//       })
-//       .catch(error => {
-//         // Log or display appropriate error message
-//         console.error('Error sending connection request:', error);
-//         // Update the row status to "Fail" with error message
-//         return updateRowData(rowId, {"Status": "Fail: "+error.message});
-//       });
-//     })
-//     .catch(error => {
-//       // Log or display appropriate error message
-//       console.error('Error fetching data:', error);
-//     });
-// }
-// function SendMine() {
-//   // Fetch data using fetchNameValue()
-//   fetchNameValue()
-//     .then(name => {
-//       Timeout = setTimeout(function () {
-//         chrome.runtime.sendMessage(
-//           { action: "fetchData", result: name, other: "" },
-//           function (e) {}
-//         );
-//       }, 5 * 1000);
-//       // chrome.runtime.sendMessage({ action: 'fetchData', sendingName: name });
-//     })
-//     .catch(error => {
-//       // Log or display appropriate error message
-//       console.error('Error fetching name value:', error);
-//     });
-// }
-function SendMine() {
-  // Fetch data using fetchNameValue()
-  fetchNameValue()
-    .then(name => {
-      PointOut("准备发送我的发送");
-      Timeout = setTimeout(function () {
-        // chrome.runtime.sendMessage(
-        //   { action: 'fetchData', result: name },
-        //   function (p) {}
-        // );
-        chrome.runtime.sendMessage(
-          { action: 'fetchData', result: name },
-          function (response) {
-            if (chrome.runtime.lastError) {
-              console.error('Error sending message:', chrome.runtime.lastError.message);
-            } else {
-              console.log('Message sent successfully');
-            }
-          }
-        );
-      }, 16 * 1000);
-      // // Set a timeout for the message
-      // const timeoutId = setTimeout(() => {
-      //   console.error('Timeout occurred while waiting for response.');
-      //   // Close the message port due to timeout
-      //   chrome.runtime.onMessage.removeListener(messageListener);
-      // }, 5000); // 5 seconds timeout
-
-      // // Send message to background script
-      // chrome.runtime.sendMessage({ action: 'fetchData', sendingName: name }, response => {
-      //   // Response received, clear the timeout
-      //   clearTimeout(timeoutId);
-
-      //   if (chrome.runtime.lastError) {
-      //     // Handle error if any
-      //     console.error('Error sending message:', chrome.runtime.lastError.message);
-      //   } else {
-      //     console.log('Response received:', response);
-      //     // Process response if needed
-      //   }
-      // });
-    })
-    .catch(error => {
-      // Log or display appropriate error message
-      console.error('Error fetching name value:', error);
-    });
-}
-
-// switch (parseInt(b["result"])) {
-//   case 0:
-//     $("#j_errmsg").html(
-//       '*账号不存在<a href="http://linkedinjl.com/r" target="_black">立即注册</a>'
-//     );
-//     $("#j_errmsg").css("color", "#f00");
-//     break;
-//   case 1:
-
-// function SendProcess(d) {
-//   switch (parseInt(d["result"])) {
-//     case 0:
-//       PointOut("我的发送没有待发送候选人");
-//       break;
-//     case 1:
-//       const data = d.data;
-//       const rowId = data.id;
-//       const template = data.Template;
-//       const connectionId = data.connectionId;
-//       // Send LinkedIn connection request
-//       var JSESSIONID = getCookie("JSESSIONID");
-//       if (JSESSIONID) {
-//         JSESSIONID = JSESSIONID.replace(/"/g, "");
-//       } else {
-//         PointOut("请确保领英账号已正常登录，请尝试刷新领英页面。");
-//         return false;
-//       }
-//       console.log(JSESSIONID);
-//       sendingConnection(template, connectionId, JSESSIONID,indexNum)
-//         .then(() => {
-//           // Update the row status to "Sent" if LinkedIn connection request succeeds
-//           // chrome.runtime.sendMessage({ action: 'updateRowData', rowId: rowId, updates: {"Status": "Sent"} });
-//           // chrome.runtime.sendMessage(
-//           //   { action: "updateRowData", rowId:rowId, updates: {"Status": "Sent"}, other: "" },
-//           //   function (h) {}
-//           // );
-//           Timeout = setTimeout(function () {
-//             // chrome.runtime.sendMessage(
-//             //   { action: 'fetchData', result: name },
-//             //   function (p) {}
-//             // );
-//             chrome.runtime.sendMessage(
-//               { action: 'updateRowData', rowId:rowId, updates: {"Status": "Sent"}},
-//               function (response) {
-//                 if (chrome.runtime.lastError) {
-//                   console.error('Error sending message:', chrome.runtime.lastError.message);
-//                 } else {
-//                   console.log('Message sent successfully');
-//                 }
-//               }
-//             );
-//           }, 3 * 1000);
-//         })
-//         .catch(error => {
-//           // Log or display appropriate error message
-//           console.error('Error sending connection request:', error);
-//           // Update the row status to "Fail" with error message
-//           // chrome.runtime.sendMessage({ action: 'updateRowData', rowId: rowId, updates: {"Status": "Fail: "+error.message} });
-//           // chrome.runtime.sendMessage(
-//           //   { action: "updateRowData", rowId:rowId, updates: {"Status": "Fail: "+error.message}, other: "" },
-//           //   function (h) {}
-//           // );
-//           Timeout = setTimeout(function () {
-//             // chrome.runtime.sendMessage(
-//             //   { action: 'fetchData', result: name },
-//             //   function (p) {}
-//             // );
-//             chrome.runtime.sendMessage(
-//               { action: 'updateRowData', rowId:rowId, updates: {"Status": "Fail: "+error.message}},
-//               function (response) {
-//                 if (chrome.runtime.lastError) {
-//                   console.error('Error sending message:', chrome.runtime.lastError.message);
-//                 } else {
-//                   console.log('Message sent successfully');
-//                 }
-//               }
-//             );
-//           }, 3 * 1000);
-//         });
-//       break;
-//     case 2:
-//       PointOut("发送出现错误");
-//       break;
-//     }
-// }
-
-// function SendProcess(d) {
-//   switch (parseInt(d["result"])) {
-//     case 0:
-//       PointOut("我的发送没有待发送候选人");
-//       break;
-//     case 1:
-//       console.log(d);
-//       const list_ = d.data;
-//       console.log(list_);
-//       // Send LinkedIn connection request for each connection ID
-//       var JSESSIONID = getCookie("JSESSIONID");
-//       if (JSESSIONID) {
-//         JSESSIONID = JSESSIONID.replace(/"/g, "");
-//       } else {
-//         PointOut("请确保领英账号已正常登录，请尝试刷新领英页面。");
-//         return false;
-//       }
-      
-//       console.log(JSESSIONID);
-
-//       // Function to send invitation with random sleep time
-//       function sendInvitationWithDelay(index) {
-//         if (index >= list_.length) {
-//           alert("本次已发送 " + list_.length + " 条邀请");
-//           return; // All invitations sent
-//         }
-//         const rowId = list_[index].id;
-//         const template = list_[index].Template;
-//         const connectionId = list_[index].connectionId; // List of connection IDs
-//         const sleepTime = Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000; // Random time between 30 and 60 seconds in milliseconds
-//         console.log(rowId+template+connectionId);
-//         // Send invitation after random sleep time
-//         sendingConnection(template, connectionId, JSESSIONID, index + 1)
-//           .then(() => {
-//             // Update row data after successful sending
-//             chrome.runtime.sendMessage(
-//               { action: 'updateRowData', rowId: rowId, updates: {"Status": "Sent"}},
-//               function (response) {
-//                 if (chrome.runtime.lastError) {
-//                   console.error('Error sending message:', chrome.runtime.lastError.message);
-//                 } else {
-//                   console.log('Message sent successfully');
-//                 }
-//               }
-//             );
-//           })
-//           .catch(error => {
-//             console.error('Error sending connection request:', error);
-//             // Update row data with error message
-//             chrome.runtime.sendMessage(
-//               { action: 'updateRowData', rowId: rowId, updates: {"Status": "Fail: " + error.message}},
-//               function (response) {
-//                 if (chrome.runtime.lastError) {
-//                   console.error('Error sending message:', chrome.runtime.lastError.message);
-//                 } else {
-//                   console.log('Message sent successfully');
-//                 }
-//               }
-//             );
-//           })
-//           .finally(() => {
-//             // Send the next invitation after random sleep time
-//             setTimeout(() => {
-//               sendInvitationWithDelay(index + 1);
-//             }, sleepTime);
-//           });
-//       }
-
-//       // Start sending invitations with delay
-//       sendInvitationWithDelay(0);
-//       break;
-//     case 2:
-//       PointOut("发送出现错误");
-//       break;
-//   }
-// }
 
 function SendProcess(d) {
   switch (parseInt(d["result"])) {
@@ -5455,9 +4889,13 @@ function StartConnectLinkedin() {
       var e = new RegExp("search/results/people", "i");
       var a = new RegExp("sales/search/people", "i");
       if (e.test(c)) {
-        JlHttp("getMesAddFriend", "", "linkedin", "");
-        return false;
-      }
+        chrome.storage.sync.get({
+            senior: false
+        }, function(f) {
+            JlHttp("getMesAddFriend", "", "linkedin", f.senior)
+        });
+        return false
+    }
       if (a.test(c)) {
         StartConnectSales();
         return false;
@@ -5954,10 +5392,14 @@ function StartConnectSales() {
         Start = m["paging"]["start"];
         Total = m["paging"]["total"];
         if (Friend) {
-          JlHttp("getMesAddFriend", "", "sales", "");
-        } else {
-          PointOut("当前页面没有可加的人，请翻到其它页试试");
-        }
+          chrome.storage.sync.get({
+              senior: false
+          }, function(n) {
+              JlHttp("getMesAddFriend", "", "sales", n.senior)
+          })
+      } else {
+          PointOut("当前页面没有可加的人，请翻到其它页试试")
+      }
       } else {
         PointOut("当前页面没有可加的人，请翻到其它页试试");
       }
@@ -10427,10 +9869,14 @@ function StartConnectGroups() {
       Friend.push(b);
     });
     if (Friend.length > 0) {
-      JlHttp("getMesAddFriend", "", "groups", "");
-    } else {
-      PointOut("请选择人脉");
-    }
+      chrome.storage.sync.get({
+          senior: false
+      }, function(b) {
+          JlHttp("getMesAddFriend", "", "groups", b.senior)
+      })
+  } else {
+      PointOut("请选择人脉")
+  }
   }
 }
 function ConnectGroups() {
@@ -10766,12 +10212,12 @@ function CopyLink() {
 }
 function ShowSharePage() {
   chrome.storage.sync.get({ account: "" }, function (a) {
-    if (!String(a.account)) {
-      ShowLoginDialog();
-      return false;
-    }
-    $("#j_share_link").val("linkedinjl.com/r?i=" + a.account);
-    JlHttp("getYeji", "", "", "");
+    // if (!String(a.account)) {
+    //   ShowLoginDialog();
+    //   return false;
+    // }
+    // $("#j_share_link").val("linkedinjl.com/r?i=" + a.account);
+    // JlHttp("getYeji", "", "", "");
   });
 }
 function GetYejiResult(a) {
@@ -10806,6 +10252,7 @@ function ShowSetPage() {
       a_max_speed: 60,
       a_limit: 100,
       i_count: 100,
+      senior: false,
       d_min_speed: 60,
       d_max_speed: 120,
       d_limit: 100,
@@ -10862,6 +10309,7 @@ function RestoreSet() {
         a_max_speed: 60,
         a_limit: 100,
         i_count: 100,
+        senior: false,
         d_min_speed: 60,
         d_max_speed: 120,
         d_limit: 100,
@@ -11190,6 +10638,31 @@ function SetInviteCount() {
     });
   }
 }
+
+function SetSenior() {
+  if ($(this).prop("checked")) {
+      JlConfirm("加人时的个性邀请消息默认最长为200字符，开启后，最长可达300字符。领英高级会员可开启，如果你的领英不是高级会员，则不要开启，可能会导致加人失败，确定要开启吗？");
+      $("#j_ok").on("click", function() {
+          chrome.storage.sync.set({
+              senior: true
+          }, function() {
+              PointOut("设置成功")
+          })
+      });
+      $("#j_cancel").on("click", function() {
+          chrome.storage.sync.get({
+              senior: false
+          }, function(a) {
+              $("#j_senior").prop("checked", Boolean(a.senior))
+          })
+      })
+  } else {
+      chrome.storage.sync.set({
+          senior: false
+      }, function() {})
+  }
+}
+
 function SetDigMinSpeed() {
   var a = $.trim($(this).val());
   var b = /^[1-9][0-9]*$/;

@@ -20,17 +20,20 @@ def handle_messages():
             # 1. fetch user_id condition
             account = data['account']
             my_urn = data['my_urn']
+            senior = data['other']
             user_id = get_user_id(dao, account, my_urn)
             conditions = {'user_id': user_id}
-            
             # 2. search results
             messages, error = dao.find('message', conditions, columns='create_time, mess, is_select')
             # Convert 'id' to 'mess_id' and ensure it's a string
-            for message in messages:
-                message['mess_id'] = str(message.pop('create_time'))
-            
             if error:
                 return format_response(False)
+            for message in messages:
+                message['mess_id'] = str(message.pop('create_time'))
+                if senior=='false':
+                    message['mess'] = message['mess'][:200]
+                else:
+                    message['mess'] = message['mess'][:300]
             return format_response(True, messages)
         except:
             return format_response(False)
@@ -206,7 +209,8 @@ def handle_messages():
             account = data['account']
             my_urn = data['my_urn']
             tag = data['tag']
-            is_select = data['other']
+            senior = data['other']
+
             
             # 1. fetch user_id condition
             user_id = get_user_id(dao, account, my_urn)
@@ -218,7 +222,11 @@ def handle_messages():
             messages, error = dao.find('message', conditions, columns='mess')
             if error:
                 return format_response(False, tag=tag)
-
+            for message in messages:
+                if senior=='false':
+                    message['mess'] = message['mess'][:200]
+                else:
+                    message['mess'] = message['mess'][:300]
             formatted_messages = [{"tidings": msg['mess']} for msg in messages]
             return format_response(True, formatted_messages, tag=tag)
 
@@ -245,31 +253,33 @@ def handle_messages():
                     'type': tag
                 }
                 success, error = dao.update('linkedin_connect', update_data, conditions)
-            elif tag == 'invite':
-                update_data = {'status': status}
-                conditions = {
-                    'user_id': user_id,
-                    'urn': linkedin_id,
-                    'type': tag
-                }
-                success, error = dao.update('linkedin_connect', update_data, conditions)
-            else:
-                if linkedin_id.startswith("ACoAA"):
-                    insert_data = {
-                        'user_id': user_id,
-                        'urn': linkedin_id,
-                        'type': tag,
-                        'status': status,
-                    }
-                else:
-                    insert_data = {
-                        'user_id': user_id,
-                        'websites': linkedin_id,
-                        'type': tag,
-                        'status': status,
-                    }
-                success, error = dao.insert('linkedin_connect', insert_data)
             
+            # elif tag == 'invite':
+            #     update_data = {'status': status}
+            #     conditions = {
+            #         'user_id': user_id,
+            #         'urn': linkedin_id,
+            #         'type': tag
+            #     }
+            #     success, error = dao.update('linkedin_connect', update_data, conditions)
+            
+            # else:
+            #     if linkedin_id.startswith("ACoAA"):
+            #         insert_data = {
+            #             'user_id': user_id,
+            #             'urn': linkedin_id,
+            #             'type': tag,
+            #             'status': status,
+            #         }
+            #     else:
+            #         insert_data = {
+            #             'user_id': user_id,
+            #             'websites': linkedin_id,
+            #             'type': tag,
+            #             'status': status,
+            #         }
+            #     success, error = dao.insert('linkedin_connect', insert_data)
+
             return json.dumps({"result":1})
         except:
             return json.dumps({"result":0})
@@ -309,7 +319,7 @@ if __name__ == '__main__':
     #     print("Successfully added urn column to message table")
         
     # # Drop Column
-    # alter_query = "ALTER TABLE message DROP COLUMN urn;"
+    # alter_query = "ALTER TABLE linkedin_connect DROP COLUMN urn;"
     # result, error = dao.execute_alter_table(alter_query)
 
     # if error:
