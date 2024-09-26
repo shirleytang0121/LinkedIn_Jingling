@@ -1,5 +1,8 @@
 from flask import Flask, request, Response
 from flask_cors import CORS
+
+import httpUtils
+import util
 from dao import DAO
 from util import format_response, get_user_id
 from config import Config
@@ -286,10 +289,37 @@ def handle_messages():
         recall_num = data['my_urn']
         print('saveRecallRecord')
         return json.dumps({'result':1})
+
+    if data['action'] == 'login':
+        email = data['data']
+        password = data['other']
+        user = util.get_user_by_email(dao, email)
+        response_body = None
+        if user is None:
+            response_body = json.dumps({'result': 0})
+            return response_body
+        hashed_password = user['password']
+        if util.check_password(password, hashed_password):
+            response_body = json.dumps({'result': 2})
+            return response_body
+        response_body = json.dumps({
+            'result': 1,
+            'data': {
+                'account': user['id'],
+                'dia_time': '2099-12-30 23:59:59',
+                'level': 3,
+                'reg_time': '2099-12-30 23:59:59',
+                'sup_time': '2099-12-30 23:59:59',
+                'trial': 10,
+                'vip_time': '2099-12-30 23:59:59',
+            },
+            'login_code':
+        })
+        return httpUtils.format_response(result=1, data=)
     
     
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)
     
     
     

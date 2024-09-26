@@ -26,6 +26,7 @@ function BindEven() {
   $("body").on("click", ".j-nav-first-option", SelectFunctionPage);
   $("body").on("click", ".j-close-dialog", RemoveDialog);
   $("body").on("click", "#j_login", Login);
+  $("body").on("click", "#j_account", ShowLoginDialog);
   $("body").on("keydown", "#j_pw", LoginEnter);
   $("body").on("click", "#j_addfriend .j-top-nav-box li", ShowAddOption);
   $("body").on("click", "#j_showInviteQueue", ShowInviteQueue);
@@ -11637,7 +11638,7 @@ function ShowLoginDialog() {
 }
 function Login() {
   var c = $.trim($("#j_acc").val());
-  var b = /^[0-9a-zA-Z]{6,11}$/;
+  var b = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!b.test(c)) {
     $("#j_errmsg").text("*账号错误");
     $("#j_errmsg").css("color", "#f00");

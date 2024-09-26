@@ -205,9 +205,10 @@ function JlHttp(tabid, url, action, data, tag, other) {
       var my_urn = "ACoAACtyFm0BW2P4KhWCCscwpcsx2m71ROWP4tg"
       var loginCode =  "XAGMW1"
       if (action in ["getMes", "getLine", "getMesAddFriend", "saveConnectRecord", "saveUrl", "getInviteQueue", "addInviteQueue", "removeInvite", "login"]){
-        var url = String("http://localhost:5000/api/messages");//String("http://localhost:5000/api/messages");
+        var url = String("http://127.0.0.1:5000/api/messages");//String("http://localhost:5000/api/messages");
+        console.log(action)
       } else{
-        var url = String("http://localhost:5000/api/messages");//String("http://www.linkedinjl.com/actionten");
+        var url = String("http://127.0.0.1:5000/api/messages");//String("http://www.linkedinjl.com/actionten");
       };
       
       $.ajax({
