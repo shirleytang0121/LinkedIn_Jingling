@@ -15,6 +15,7 @@ dao = DAO(db_config)
 def handle_messages():
     data = request.form
 
+    # Section: 邀请消息模板
     if data['action'] == 'getMes':
         try:
             # 1. fetch user_id condition
@@ -116,7 +117,8 @@ def handle_messages():
             return json.dumps({"result":1})
         except:
             return json.dumps({"result":0})
-        
+    
+    # Section: 链接加人
     if data['action'] == 'getLine':
         try:
             # 1. fetch user_id condition
@@ -204,6 +206,7 @@ def handle_messages():
             print(f"Error in handle_messages: {str(e)}")
             return json.dumps({"result": 0})
 
+    # Section: 点击加人
     if data['action'] == 'getMesAddFriend':
         try:
             account = data['account']
@@ -234,6 +237,7 @@ def handle_messages():
             print(f"Error in getMesAddFriend: {str(e)}")
             return format_response(False, tag=data.get('tag', ''))
 
+    # Section: 邀请记录
     if data['action'] == 'saveConnectRecord':
         try:
             account = data['account']
@@ -284,6 +288,7 @@ def handle_messages():
         except:
             return json.dumps({"result":0})
         
+    # Section：发送保存
     if data['action'] == 'saveUrl':
         account = data['account']
         my_urn = data['my_urn']
@@ -296,6 +301,10 @@ def handle_messages():
         recall_num = data['my_urn']
         print('saveRecallRecord')
         return json.dumps({'result':1})
+    
+    # Section: 批量点赞
+    if data['action'] == 'saveThumbsRecord':
+        return Response(status=200)
     
     
 if __name__ == '__main__':
