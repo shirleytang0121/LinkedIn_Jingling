@@ -10,7 +10,7 @@ import logging
 
 def to_dto(linkedin_account):
     return {
-        "invite_time": linkedin_account.invite_time,
+        "invite_time": linkedin_account.invite_time.strftime('%Y-%m-%d %H:%M:%S') if linkedin_account.invite_time is not None else None,
         "first_name": linkedin_account.first_name,
         "img": linkedin_account.img,
         "last_name": linkedin_account.last_name,
@@ -74,7 +74,7 @@ class InviteListService:
                                                                   InviteList.urn == data))
             exist_invite = query.first()
             exist_invite.invite_time = datetime.datetime.now()
-            exist_invite.status = 1
+            exist_invite.state = 1
             self.db.session.commit()
             self.db.session.refresh(exist_invite)
         except Exception as e:
