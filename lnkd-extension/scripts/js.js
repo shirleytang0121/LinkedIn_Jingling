@@ -483,8 +483,8 @@ function ShowOrHideWindow() {
     }, function(a) {
         if ($("#j_lyjl_window").is(":hidden")) {
             ShowOption(String(a.option));
-            // InitMember();
-            // CheckLYZC()
+            InitMember();
+            CheckLYZC()
         }
         $("#j_lyjl_window").slideToggle(200);
         $(".j-lyjl-bg").slideToggle(0)
@@ -838,6 +838,7 @@ function GetInviteQueue(a) {
     chrome.storage.sync.get({
         i_count: 100
     }, function(b) {
+        console.log('get in GetInviteQueue!!!!!!!');
         PointOut("待加人脉获取中...", 10);
         var c = parseInt(b.i_count);
         var d = $("#j_inviteState").val();
@@ -845,6 +846,7 @@ function GetInviteQueue(a) {
     })
 }
 function GetInviteQueueResult(c) {
+    console.log('Get innnnnnn GetInviteQueueResult!!!!!!')
     if (c) {
         switch (c["result"]) {
         case 0:

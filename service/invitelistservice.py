@@ -22,13 +22,13 @@ def to_dto(linkedin_account):
 
 
 def format_linkedin_accounts(linkedin_accounts, per_page, page, total_count):
-    return {
+    return json.dumps({
         "count": str(per_page),
         "data": list(map(to_dto, linkedin_accounts)),
         "page": str(page),
         "result": 1,
         "total": total_count
-    }
+    })
 
 
 class InviteListService:

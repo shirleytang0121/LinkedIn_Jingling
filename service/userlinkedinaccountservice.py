@@ -21,10 +21,10 @@ def to_dto(account):
 
 
 def format_linkedin_accounts(accounts):
-    return {
+    return json.dumps({
         "data": list(map(to_dto, accounts)),
         "result": 1
-    }
+    })
 
 
 class UserLinkedinAccountService:
