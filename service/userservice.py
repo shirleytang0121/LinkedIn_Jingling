@@ -55,6 +55,18 @@ class UserService:
             response_body = json.dumps({'result': 0})
         return response_body
 
+    def logout(self, user_id, login_code):
+        try:
+            existed_user = User.query.filter(and_(User.id == user_id, User.login_code == login_code)).first()
+            if existed_user:
+                existed_user.login_code = None
+                self.db.session.commit()
+                self.db.session.refresh(existed_user)
+            return json.dumps({"result": 1})
+        except Exception as e:
+            return json.dumps({"result": 2})
+
+
     def check_login_code(self, login_info):
         if login_info['login_code'] is '' or login_info['login_code'] is None:
             response_body = json.dumps({

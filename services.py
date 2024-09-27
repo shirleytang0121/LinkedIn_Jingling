@@ -25,7 +25,7 @@ dao = DAO(db_config)
 @app.route('/api/messages', methods=['POST'])
 def handle_messages():
     data = request.form
-
+    print(data['action'])
     # Section: 邀请消息模板
     if data['action'] == 'getMes':
         try:
@@ -268,6 +268,11 @@ def handle_messages():
                     'type': tag
                 }
                 success, error = dao.update('linkedin_connect', update_data, conditions)
+
+            ##这里对待加列表做特殊处理，加完的人需要改变待加状态为已加
+            elif tag == 'invite':
+                user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(account, my_urn)
+                InviteListService(db).invite_from_queue(user_linkedin_id, linkedin_id)
             
             # elif tag == 'invite':
             #     update_data = {'status': status}
@@ -346,6 +351,10 @@ def handle_messages():
         # })
         return response_body
 
+    if data['action'] == 'logout':
+        user_id = UserLinkedinAccountService(db).get_user_id(data['my_urn'])
+        UserService(db).logout(user_id, data['login_code'])
+
     if data['action'] == 'register':
         user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id']}
         return UserService(db).register(user)
@@ -386,6 +395,23 @@ def handle_messages():
             return login_res
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         return InviteListService(db).add_invite_queue(data['data'], user_linkedin_id, data['tag'])
+
+    if data['action'] == 'getInviteQueue':
+        login_info = {'id': data['account'], 'login_code': data['login_code']}
+        login_res = UserService(db).check_login_code(login_info)
+        if login_res:
+            return login_res
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        pagination = {'page': data['data'], 'size': data['other']}
+        return InviteListService(db).get_invite_queue(pagination, user_linkedin_id, data['tag'])
+
+    if data['action'] == 'removeInviteQueue':
+        login_info = {'id': data['account'], 'login_code': data['login_code']}
+        login_res = UserService(db).check_login_code(login_info)
+        if login_res:
+            return login_res
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return InviteListService(db).remove_invite_queue(data['data'], user_linkedin_id)
 
 
 

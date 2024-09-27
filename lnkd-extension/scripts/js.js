@@ -24,6 +24,7 @@ $(document).ready(function() {
     getUrl()
 });
 function BindEven() {
+    $("body").on("click", "#j_account", ShowLoginDialog);
     $("body").on("click", ".j-lyjl-bg", ShowOrHideWindow);
     $("body").on("click", "#j_logo", ShowOrHideWindow);
     $("body").on("click", ".j-nav-first-option", SelectFunctionPage);
@@ -8222,7 +8223,7 @@ function ShowLoginDialog() {
 }
 function Login() {
     var c = $.trim($("#j_acc").val());
-    var b = /^[0-9a-zA-Z]{6,11}$/;
+    var b = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!b.test(c)) {
         $("#j_errmsg").text("*账号错误");
         $("#j_errmsg").css("color", "#f00");

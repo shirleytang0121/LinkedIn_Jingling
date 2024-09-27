@@ -88,3 +88,7 @@ class UserLinkedinAccountService:
         res = self.db.session.query(UserLinkedinAccount).filter(
             and_(UserLinkedinAccount.user_id == user_id, UserLinkedinAccount.my_urn == urn)).first()
         return res.id
+
+    def get_user_id(self, urn):
+        res = self.db.session.query(UserLinkedinAccount).filter(UserLinkedinAccount.my_urn == urn).first()
+        return res.user_id
