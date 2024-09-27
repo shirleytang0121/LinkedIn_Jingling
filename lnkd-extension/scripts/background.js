@@ -201,13 +201,14 @@ function JlHttp(tabid, url, action, data, tag, other) {
       var loginCode = String(items.loginCode);
       
       //temporary test add
-      var account = "18969306212"
-      var my_urn = "ACoAACtyFm0BW2P4KhWCCscwpcsx2m71ROWP4tg"
-      var loginCode =  "XAGMW1"
-      if (action in ["getMes", "getLine", "getMesAddFriend", "saveConnectRecord", "saveUrl"]){
-        var url = String("http://localhost:5000/api/messages");//String("http://localhost:5000/api/messages");
+      // var account = "18969306212"
+      // var my_urn = "ACoAACtyFm0BW2P4KhWCCscwpcsx2m71ROWP4tg"
+      // var loginCode =  "XAGMW1"
+      if (action in ["getMes", "getLine", "getMesAddFriend", "saveConnectRecord", "saveUrl", "getInviteQueue", "addInviteQueue", "removeInvite", "login", "logout"]){
+        var url = String("http://127.0.0.1:5000/api/messages");//String("http://localhost:5000/api/messages");
+        console.log(action)
       } else{
-        var url = String("http://localhost:5000/api/messages");//String("http://www.linkedinjl.com/actionten");
+        var url = String("http://127.0.0.1:5000/api/messages");//String("http://www.linkedinjl.com/actionten");
       };
       
       $.ajax({
