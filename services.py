@@ -183,7 +183,7 @@ def handle_messages():
                 return json.dumps({"result": 0})
 
             existing_urls_set = set(url['websites'] for url in existing_urls)
-            deduplicated_urls = [url for url in new_urls if url not in existing_urls_set]
+            deduplicated_urls = [url for url in set(new_urls) if url not in existing_urls_set]
             print(deduplicated_urls)
             
             # 3. insert the bulk data

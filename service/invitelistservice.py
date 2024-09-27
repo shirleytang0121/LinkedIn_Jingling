@@ -66,6 +66,7 @@ class InviteListService:
                 "result": 2,
                 "tag": tag
             }
+            print(e)
             return json.dumps(response_body)
 
     def invite_from_queue(self, user_linkedin, data):
