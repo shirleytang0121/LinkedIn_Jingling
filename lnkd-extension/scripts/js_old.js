@@ -935,7 +935,7 @@ function ShowBind(d) {
     c += "</div>";
   }
   c +=
-    '<div class="j-bind-note"><p>*每个领英精灵可关联5个领英账号，关联后1天后可解绑。</p></div>' +
+    '<div class="j-bind-note"><p>*每个领英精灵可关联5个领英账号，关联后不可解绑。</p></div>' +
     "</div>";
   "</div>" + "</div>";
   $("#j_lyjl_window").append(c);

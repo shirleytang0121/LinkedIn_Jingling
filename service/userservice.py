@@ -50,7 +50,7 @@ class UserService:
                         'level': 3,
                         'reg_time': '2099-12-30 23:59:59',
                         'sup_time': '2099-12-30 23:59:59',
-                        'trial': 10,
+                        'trial': 0,
                         'vip_time': '2099-12-30 23:59:59',
                     },
                     'login_code': login_code
