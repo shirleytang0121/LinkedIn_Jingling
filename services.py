@@ -1,18 +1,26 @@
 from flask import Flask, request, Response
 from flask_cors import CORS
+from extensions import db
 
 import httpUtils
 import util
 from dao import DAO
 from util import format_response, get_user_id
 from config import Config
+from dataconfig import Config as DataConfig
 import json
+from service.userservice import UserService
+from service.userlinkedinaccountservice import UserLinkedinAccountService
+from service.invitelistservice import InviteListService
 
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
-
+app.config.from_object(DataConfig)
+# app.config['SQLALCHEMY_DATABASE_URI'] = DataConfig.SQLALCHEMY_DATABASE_URI
+db.init_app(app)
 db_config = Config.get_db_config()
 dao = DAO(db_config)
+
 
 @app.route('/api/messages', methods=['POST'])
 def handle_messages():
@@ -34,7 +42,7 @@ def handle_messages():
                 return format_response(False)
             for message in messages:
                 message['mess_id'] = str(message.pop('create_time'))
-                if senior=='false':
+                if senior == 'false':
                     message['mess'] = message['mess'][:200]
                 else:
                     message['mess'] = message['mess'][:300]
@@ -67,16 +75,16 @@ def handle_messages():
             print(f"Error in updateMessageIsSelect: {str(e)}")
             return json.dumps({"result":0,"tidings_id":"","action":is_select})
 
-    if data['action'] == 'selectAllMes':  
+    if data['action'] == 'selectAllMes':
         try:
             account = data['account']
             my_urn = data['my_urn']
             is_select = data['data']
             total_message=data.get('other', None)
-            
+
             # 1. fetch user_id condition
             user_id = get_user_id(dao, account, my_urn)
-            
+
             update_data = {'is_select': is_select}
             conditions = {
                 'user_id': user_id
@@ -120,7 +128,7 @@ def handle_messages():
             return json.dumps({"result":1})
         except:
             return json.dumps({"result":0})
-    
+
     # Section: 链接加人
     if data['action'] == 'getLine':
         try:
@@ -290,7 +298,7 @@ def handle_messages():
             return json.dumps({"result":1})
         except:
             return json.dumps({"result":0})
-        
+
     # Section：发送保存
     if data['action'] == 'saveUrl':
         account = data['account']
@@ -306,45 +314,88 @@ def handle_messages():
         return json.dumps({'result':1})
 
     if data['action'] == 'login':
-        email = data['data']
-        password = data['other']
-        user = util.get_user_by_email(dao, email)
-        response_body = None
-        if user is None:
-            response_body = json.dumps({'result': 0})
-            return response_body
-        hashed_password = user['password']
-        if util.check_password(password, hashed_password):
-            response_body = json.dumps({'result': 2})
-            return response_body
-        response_body = json.dumps({
-            'result': 1,
-            'data': {
-                'account': user['id'],
-                'dia_time': '2099-12-30 23:59:59',
-                'level': 3,
-                'reg_time': '2099-12-30 23:59:59',
-                'sup_time': '2099-12-30 23:59:59',
-                'trial': 10,
-                'vip_time': '2099-12-30 23:59:59',
-            },
-            'login_code':
-        })
-        return httpUtils.format_response(result=1, data=)
-    
-    # Section: 批量点赞
-    if data['action'] == 'saveThumbsRecord':
-        return Response(status=200)
-    
-    
+        login_info = {"email": data['data'], "password": data['other']}
+        response_body = UserService(db).login(login_info)
+        # user = util.get_user_by_email(dao, email)
+        # # response_body = None
+        # if user is None:
+        #     response_body = json.dumps({'result': 0})
+        #     return response_body
+        # hashed_password = user['password']
+        # if util.check_password(password, hashed_password):
+        #     response_body = json.dumps({'result': 2})
+        #     return response_body
+        # login_code = userservice.generate_random_string(6)
+        # update_data = {'login_code': login_code}
+        # conditions = {
+        #     'user_id': user['id'],
+        # }
+        # dao.update('user', update_data)
+        # response_body = json.dumps({
+        #     'result': 1,
+        #     'data': {
+        #         'account': user['id'],
+        #         'dia_time': '2099-12-30 23:59:59',
+        #         'level': 3,
+        #         'reg_time': '2099-12-30 23:59:59',
+        #         'sup_time': '2099-12-30 23:59:59',
+        #         'trial': 10,
+        #         'vip_time': '2099-12-30 23:59:59',
+        #     },
+        #     'login_code': login_code
+        # })
+        return response_body
+
+    if data['action'] == 'register':
+        user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id']}
+        return UserService(db).register(user)
+        # if userservice.is_valid_email(email):
+        #     dao.find()
+        #     dao.insert('user',
+        #                {'apn_user_id': apn_user_id, 'apn_email': email, 'password': util.hashed_password(password)})
+        #
+        #     return Response(response=json.dumps({
+        #         "status": "success",
+        #         "account": new_user['id'],
+        #         "email": new_user['apn_email']}),
+        #         status=201)
+        # else:
+        #     return Response(response=json.dumps({
+        #         "status": "error",
+        #         "user_id": "The email format is invalid!"}),
+        #         status=400)
+    if data['action'] == 'bindLinkedin':
+        login_info = {'id': data['account'],'login_code': data['login_code'] }
+        login_res = UserService(db).check_login_code(login_info)
+        if login_res:
+            return login_res
+        linkedin_account = {'data': data['data'], 'user_id': data['account']}
+        return UserLinkedinAccountService(db).bind_account(linkedin_account)
+
+    if data['action'] == 'getBind':
+        login_info = {'id': data['account'], 'login_code': data['login_code']}
+        login_res = UserService(db).check_login_code(login_info)
+        if login_res:
+            return login_res
+        return UserLinkedinAccountService(db).get_bind_accounts(data['account'])
+
+    if data['action'] == 'addInviteQueue':
+        login_info = {'id': data['account'], 'login_code': data['login_code']}
+        login_res = UserService(db).check_login_code(login_info)
+        if login_res:
+            return login_res
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return InviteListService(db).add_invite_queue(data['data'], user_linkedin_id, data['tag'])
+
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
-    
-    
-    
-    
-    
-    
+
     # # Add Column
     # alter_query = """
     # ALTER TABLE linkedin_connect
