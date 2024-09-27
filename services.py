@@ -9,7 +9,7 @@ from util import format_response, get_user_id
 from config import Config
 from dataconfig import Config as DataConfig
 import json
-from service.userservice import UserService
+from service.userservice import UserService, check_urn
 from service.userlinkedinaccountservice import UserLinkedinAccountService
 from service.invitelistservice import InviteListService
 
@@ -393,6 +393,8 @@ def handle_messages():
         login_res = UserService(db).check_login_code(login_info)
         if login_res:
             return login_res
+        if check_urn(data['my_urn']):
+            return check_urn(data['my_urn'])
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         return InviteListService(db).add_invite_queue(data['data'], user_linkedin_id, data['tag'])
 
@@ -401,6 +403,8 @@ def handle_messages():
         login_res = UserService(db).check_login_code(login_info)
         if login_res:
             return login_res
+        if check_urn(data['my_urn']):
+            return check_urn(data['my_urn'])
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         pagination = {'page': data['data'], 'size': data['other']}
         return InviteListService(db).get_invite_queue(pagination, user_linkedin_id, data['tag'])
@@ -410,6 +414,8 @@ def handle_messages():
         login_res = UserService(db).check_login_code(login_info)
         if login_res:
             return login_res
+        if check_urn(data['my_urn']):
+            return check_urn(data['my_urn'])
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         return InviteListService(db).remove_invite_queue(data['data'], user_linkedin_id)
 

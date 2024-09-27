@@ -40,8 +40,8 @@ class InviteListService:
         try:
             invite_data = json.loads(data)
             urns = [item['urn'] for item in invite_data]
-            exist_data = self.db.session.query(InviteList).filter(InviteList.urn.in_(urns)).all()
-            exist_urns = set(exist['urn'] for exist in exist_data)
+            exist_data = self.db.session.query(InviteList).filter(and_(InviteList.user_linkedin_id == user_linkedin, InviteList.urn.in_(urns))).all()
+            exist_urns = set([exist.urn for exist in exist_data])
             filtered_data = [item for item in invite_data if item['urn'] not in exist_urns]
             new_records = [InviteList(
                 public_id=item['public_id'],

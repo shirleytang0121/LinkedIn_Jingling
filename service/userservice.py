@@ -7,7 +7,6 @@ import json
 from flask import make_response, jsonify, Response
 
 
-
 def generate_random_string(length):
     characters = string.digits + string.ascii_uppercase
     random_string = ''.join(random.choice(characters) for _ in range(length))
@@ -19,6 +18,13 @@ def is_valid_email(email):
     regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     # Check if the email matches the regex pattern
     return re.match(regex, email) is not None
+
+
+def check_urn(urn):
+    if urn == '':
+        return json.dumps({
+            'result': 4
+        })
 
 
 class UserService:
@@ -66,7 +72,6 @@ class UserService:
         except Exception as e:
             return json.dumps({"result": 2})
 
-
     def check_login_code(self, login_info):
         if login_info['login_code'] is '' or login_info['login_code'] is None:
             response_body = json.dumps({
@@ -85,8 +90,6 @@ class UserService:
                 })
                 return response_body
         return None
-
-
 
     def check_valid_register(self, user):
         existed = User.query.filter(User.apn_email == user.apn_email).first()
@@ -114,7 +117,3 @@ class UserService:
                 "message": "register account failed!"}),
                 status=400,
                 mimetype='application/json')
-
-
-
-
