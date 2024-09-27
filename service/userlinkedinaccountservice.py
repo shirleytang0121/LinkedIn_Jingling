@@ -8,10 +8,10 @@ from flask import make_response, jsonify, Response
 import datetime
 import json
 
-
+    
 def to_dto(account):
     return {
-        "bind_time": account.bind_time,
+        "bind_time": account.bind_time.strftime('%Y-%m-%d %H:%M:%S') if isinstance(account.bind_time, datetime.datetime) else account.bind_time,
         "first_name": account.first_name,
         "img": account.img,
         "last_name": account.last_name,
