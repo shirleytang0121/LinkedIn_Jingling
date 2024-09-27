@@ -101,7 +101,7 @@ class InviteListService:
     def remove_invite_queue(self, data, user_linkedin):
         try:
             query = self.db.session.query(InviteList).filter(InviteList.user_linkedin_id == user_linkedin)
-            query = query.filter(InviteList.urn.in_(data))
+            query = query.filter(InviteList.urn.in_(json.loads(data)))
             query.delete()
             self.db.session.commit()
             response_body = {
