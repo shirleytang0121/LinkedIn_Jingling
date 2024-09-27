@@ -26,6 +26,35 @@ dao = DAO(db_config)
 def handle_messages():
     data = request.form
     print(data['action'])
+
+    if data['action'] == 'login':
+        login_info = {"email": data['data'], "password": data['other']}
+        response_body = UserService(db).login(login_info)
+        return response_body
+
+    if data['action'] == 'logout':
+        user_id = UserLinkedinAccountService(db).get_user_id(data['my_urn'])
+        UserService(db).logout(user_id, data['login_code'])
+
+    if data['action'] == 'register':
+        user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id']}
+        return UserService(db).register(user)
+
+    if data['action'] == 'bindLinkedin':
+        login_info = {'id': data['account'], 'login_code': data['login_code']}
+        login_res = UserService(db).check_login_code(login_info)
+        if login_res:
+            return login_res
+        linkedin_account = {'data': data['data'], 'user_id': data['account']}
+        return UserLinkedinAccountService(db).bind_account(linkedin_account)
+
+    login_info = {'id': data['account'], 'login_code': data['login_code']}
+    login_res = UserService(db).check_login_code(login_info)
+    if login_res:
+        return login_res
+    if check_urn(data['my_urn']):
+        return check_urn(data['my_urn'])
+
     # Section: 邀请消息模板
     if data['action'] == 'getMes':
         try:
@@ -321,107 +350,21 @@ def handle_messages():
         print('saveRecallRecord')
         return json.dumps({'result':1})
 
-    if data['action'] == 'login':
-        login_info = {"email": data['data'], "password": data['other']}
-        response_body = UserService(db).login(login_info)
-        # user = util.get_user_by_email(dao, email)
-        # # response_body = None
-        # if user is None:
-        #     response_body = json.dumps({'result': 0})
-        #     return response_body
-        # hashed_password = user['password']
-        # if util.check_password(password, hashed_password):
-        #     response_body = json.dumps({'result': 2})
-        #     return response_body
-        # login_code = userservice.generate_random_string(6)
-        # update_data = {'login_code': login_code}
-        # conditions = {
-        #     'user_id': user['id'],
-        # }
-        # dao.update('user', update_data)
-        # response_body = json.dumps({
-        #     'result': 1,
-        #     'data': {
-        #         'account': user['id'],
-        #         'dia_time': '2099-12-30 23:59:59',
-        #         'level': 3,
-        #         'reg_time': '2099-12-30 23:59:59',
-        #         'sup_time': '2099-12-30 23:59:59',
-        #         'trial': 10,
-        #         'vip_time': '2099-12-30 23:59:59',
-        #     },
-        #     'login_code': login_code
-        # })
-        return response_body
-
-    if data['action'] == 'logout':
-        user_id = UserLinkedinAccountService(db).get_user_id(data['my_urn'])
-        UserService(db).logout(user_id, data['login_code'])
-
-    if data['action'] == 'register':
-        user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id']}
-        return UserService(db).register(user)
-        # if userservice.is_valid_email(email):
-        #     dao.find()
-        #     dao.insert('user',
-        #                {'apn_user_id': apn_user_id, 'apn_email': email, 'password': util.hashed_password(password)})
-        #
-        #     return Response(response=json.dumps({
-        #         "status": "success",
-        #         "account": new_user['id'],
-        #         "email": new_user['apn_email']}),
-        #         status=201)
-        # else:
-        #     return Response(response=json.dumps({
-        #         "status": "error",
-        #         "user_id": "The email format is invalid!"}),
-        #         status=400)
-    if data['action'] == 'bindLinkedin':
-        login_info = {'id': data['account'],'login_code': data['login_code'] }
-        login_res = UserService(db).check_login_code(login_info)
-        if login_res:
-            return login_res
-        linkedin_account = {'data': data['data'], 'user_id': data['account']}
-        return UserLinkedinAccountService(db).bind_account(linkedin_account)
-
     if data['action'] == 'getBind':
-        login_info = {'id': data['account'], 'login_code': data['login_code']}
-        login_res = UserService(db).check_login_code(login_info)
-        if login_res:
-            return login_res
         return UserLinkedinAccountService(db).get_bind_accounts(data['account'])
 
     if data['action'] == 'addInviteQueue':
-        login_info = {'id': data['account'], 'login_code': data['login_code']}
-        login_res = UserService(db).check_login_code(login_info)
-        if login_res:
-            return login_res
-        if check_urn(data['my_urn']):
-            return check_urn(data['my_urn'])
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         return InviteListService(db).add_invite_queue(data['data'], user_linkedin_id, data['tag'])
 
     if data['action'] == 'getInviteQueue':
-        login_info = {'id': data['account'], 'login_code': data['login_code']}
-        login_res = UserService(db).check_login_code(login_info)
-        if login_res:
-            return login_res
-        if check_urn(data['my_urn']):
-            return check_urn(data['my_urn'])
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         pagination = {'page': data['data'], 'size': data['other']}
         print(InviteListService(db).get_invite_queue(pagination, user_linkedin_id, data['tag']))
         print(json.dumps({"total":6,"result":1,"data":[{"urn":"ACoAACZl5EcBfWzVeWpdhthEGJZRCGlmDeBJyN8","public_id":"mitchell-rice-8b38b315b","first_name":"Mitchell","last_name":"Rice","position":"Principal - Elkstone Capital | GP | MF, Self-Storage, Hotel to MF | Fund Manager - Cargo Capital | REFM 1,2,3 | $15M equity raised YTD","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D5603AQH_-O2B2x0rsw\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1725388402190?e=1732752000&v=beta&t=btvqO80ktna65BGJ_X6SMRoxy3U7-5NyYm16qgfCxu4","invite_time":None,"state":"2"},{"urn":"ACoAAC7qE8QBp-TEjAVI7DzxmLC2gLtX1jTf_fM","public_id":"bryanvanderlyn","first_name":"Bryan","last_name":"Vanderlyn","position":"A-123 Senior Consultant","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D4E03AQFrMZ9tTQgG1w\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1718242951614?e=1732752000&v=beta&t=SPQFhFJj6JJZo5KwZtZcBjlj-OTwlTvRha5X8FJJ2CM","invite_time":None,"state":"2"},{"urn":"ACoAACUPaBkB4qNzmzPIYWQGXXinEEumWZ_xofY","public_id":"tian-yang","first_name":"Tian","last_name":"Yang","position":"Applied Business Analyst","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/C5603AQGAxIBnAP_gVQ\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1630646060215?e=1732752000&v=beta&t=AAy8m1kKR03RZqmsnf0zHggUC36XBmHhugLHNRW6Vac","invite_time":None,"state":"2"},{"urn":"ACoAABXe2oUBm6OuhTMIe3dk1YIiulvDVGfX5c0","public_id":"chonghaohuang","first_name":"Chonghao","last_name":"Huang","position":"Investor","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/C5603AQGyau5SkyeCtQ\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1645213062847?e=1732752000&v=beta&t=HmyCh3cz7tQwSi9cZkw2qQ8W5GmFdczu8AEb7sQHfdU","invite_time":None,"state":"2"},{"urn":"ACoAACGb75wBi5ch2g-jbp-40dEKSawvpFnWMp4","public_id":"vasundhararakesh","first_name":"Vasundhara","last_name":"Rakesh","position":"MBA at Stanford GSB | Cartesia | Bain & Company","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D5603AQGyizhx82QdlQ\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1707248629162?e=1732752000&v=beta&t=cZH0AwCcm7kguDbBM72i-zhhv15vHoDvTKV_eXo36dU","invite_time":None,"state":"2"},{"urn":"ACoAADEahRoBmbi-KK56_5hXxwJZHA3MoM3R7vA","public_id":"matthew-plisko-736a901ab","first_name":"Matthew","last_name":"Plisko","position":"AVP - Quantitative Research and Trading Recruitment Consultant at Selby Jennings","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D4E03AQEPGCj3sjivMA\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1704288858888?e=1732752000&v=beta&t=hd0X8ujxYu5TQs3HDZL6O-yi_BdM2jOwZ2wTsqSBVUQ","invite_time":None,"state":"2"}],"page":"1","count":"100"}))
         return InviteListService(db).get_invite_queue(pagination, user_linkedin_id, data['tag'])
-        # return json.dumps({"total":6,"result":1,"data":[{"urn":"ACoAACZl5EcBfWzVeWpdhthEGJZRCGlmDeBJyN8","public_id":"mitchell-rice-8b38b315b","first_name":"Mitchell","last_name":"Rice","position":"Principal - Elkstone Capital | GP | MF, Self-Storage, Hotel to MF | Fund Manager - Cargo Capital | REFM 1,2,3 | $15M equity raised YTD","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D5603AQH_-O2B2x0rsw\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1725388402190?e=1732752000&v=beta&t=btvqO80ktna65BGJ_X6SMRoxy3U7-5NyYm16qgfCxu4","invite_time":None,"state":"2"},{"urn":"ACoAAC7qE8QBp-TEjAVI7DzxmLC2gLtX1jTf_fM","public_id":"bryanvanderlyn","first_name":"Bryan","last_name":"Vanderlyn","position":"A-123 Senior Consultant","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D4E03AQFrMZ9tTQgG1w\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1718242951614?e=1732752000&v=beta&t=SPQFhFJj6JJZo5KwZtZcBjlj-OTwlTvRha5X8FJJ2CM","invite_time":None,"state":"2"},{"urn":"ACoAACUPaBkB4qNzmzPIYWQGXXinEEumWZ_xofY","public_id":"tian-yang","first_name":"Tian","last_name":"Yang","position":"Applied Business Analyst","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/C5603AQGAxIBnAP_gVQ\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1630646060215?e=1732752000&v=beta&t=AAy8m1kKR03RZqmsnf0zHggUC36XBmHhugLHNRW6Vac","invite_time":None,"state":"2"},{"urn":"ACoAABXe2oUBm6OuhTMIe3dk1YIiulvDVGfX5c0","public_id":"chonghaohuang","first_name":"Chonghao","last_name":"Huang","position":"Investor","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/C5603AQGyau5SkyeCtQ\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1645213062847?e=1732752000&v=beta&t=HmyCh3cz7tQwSi9cZkw2qQ8W5GmFdczu8AEb7sQHfdU","invite_time":None,"state":"2"},{"urn":"ACoAACGb75wBi5ch2g-jbp-40dEKSawvpFnWMp4","public_id":"vasundhararakesh","first_name":"Vasundhara","last_name":"Rakesh","position":"MBA at Stanford GSB | Cartesia | Bain & Company","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D5603AQGyizhx82QdlQ\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1707248629162?e=1732752000&v=beta&t=cZH0AwCcm7kguDbBM72i-zhhv15vHoDvTKV_eXo36dU","invite_time":None,"state":"2"},{"urn":"ACoAADEahRoBmbi-KK56_5hXxwJZHA3MoM3R7vA","public_id":"matthew-plisko-736a901ab","first_name":"Matthew","last_name":"Plisko","position":"AVP - Quantitative Research and Trading Recruitment Consultant at Selby Jennings","img":"https:\/\/media.licdn.com\/dms\/image\/v2\/D4E03AQEPGCj3sjivMA\/profile-displayphoto-shrink_100_100\/profile-displayphoto-shrink_100_100\/0\/1704288858888?e=1732752000&v=beta&t=hd0X8ujxYu5TQs3HDZL6O-yi_BdM2jOwZ2wTsqSBVUQ","invite_time":None,"state":"2"}],"page":"1","count":"100"})
-    
+
     if data['action'] == 'removeInvite':
-        login_info = {'id': data['account'], 'login_code': data['login_code']}
-        login_res = UserService(db).check_login_code(login_info)
-        if login_res:
-            return login_res
-        if check_urn(data['my_urn']):
-            return check_urn(data['my_urn'])
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         return InviteListService(db).remove_invite_queue(data['data'], user_linkedin_id)
 
