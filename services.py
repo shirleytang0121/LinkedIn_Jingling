@@ -33,8 +33,7 @@ def handle_messages():
         return response_body
 
     if data['action'] == 'logout':
-        user_id = UserLinkedinAccountService(db).get_user_id(data['my_urn'])
-        return UserService(db).logout(user_id, data['login_code'])
+        return UserService(db).logout(data['login_code'])
 
     if data['action'] == 'register':
         user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id'], 'secret': data['secret']}

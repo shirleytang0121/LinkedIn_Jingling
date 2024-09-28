@@ -1,3 +1,4 @@
+import logging
 import string
 import random
 import re
@@ -38,12 +39,20 @@ class UserLinkedinAccountService:
         exist_account = self.db.session.query(UserLinkedinAccount).filter(
             UserLinkedinAccount.my_urn == exist_urn).first()
         if exist_account is not None:
-            response_body = json.dumps({
-                "data": linkedin_account['data'],
-                "result": 0,
-                "show": True
-            })
-            return response_body
+            if exist_account.user_id == int(linkedin_account['user_id']):
+                response_body = json.dumps({
+                    "data": linkedin_account['data'],
+                    "result": 1,
+                    "show": False
+                })
+                return response_body
+            else:
+                response_body = json.dumps({
+                    "data": linkedin_account['data'],
+                    "result": 0,
+                    "show": True
+                })
+                return response_body
         accounts = self.db.session.query(UserLinkedinAccount).filter(
             UserLinkedinAccount.user_id == linkedin_account['user_id']).all()
         linkedin_account['data'] = json.loads(linkedin_account['data'])
@@ -81,6 +90,7 @@ class UserLinkedinAccountService:
                 })
                 return response_body
             except Exception as e:
+                logging.error(e)
                 response_body = json.dumps({
                     "data": linkedin_account['data'],
                     "result": 0,

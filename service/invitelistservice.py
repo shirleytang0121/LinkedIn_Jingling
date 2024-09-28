@@ -66,7 +66,7 @@ class InviteListService:
                 "result": 2,
                 "tag": tag
             }
-            print(e)
+            logging.error(e)
             return json.dumps(response_body)
 
     def invite_from_queue(self, user_linkedin, data):
@@ -94,6 +94,7 @@ class InviteListService:
             results = query.limit(per_page).offset((page - 1) * per_page).all()
             return format_linkedin_accounts(results, per_page, page, total_count)
         except Exception as e:
+            logging.error(e)
             response_body = {
                 "result": 2,
             }
@@ -110,6 +111,7 @@ class InviteListService:
             }
             return json.dumps(response_body)
         except Exception as e:
+            logging.error(e)
             response_body = {
                 "result": 2,
             }
