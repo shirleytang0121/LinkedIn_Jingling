@@ -30,6 +30,7 @@ def get_user_id(dao: DAO, account: str, my_urn: str) -> Optional[int]:
     :return: User ID if found, None otherwise
     """
     conditions = {'user_id': account,'my_urn':my_urn}
+    print(conditions)
     result, error = dao.find('user_linkedin_account', conditions, columns='id')
     
     if error:

@@ -140,9 +140,19 @@ def handle_messages():
             # 1. fetch user_id condition
             user_id = get_user_id(dao, account, my_urn)
 
-            # save message
-            dao.insert('message',
-                       {'user_id': user_id, 'mess': message_content, 'is_select': 1, 'create_time': create_time})
+            # 2. check if this message exist
+            conditions={'user_id':user_id, 'create_time':create_time}
+            message_id, error = dao.find('message', conditions, columns='id')
+            if message_id:
+                update_data = {'mess': message_content}
+                conditions = {
+                    'id': message_id[0]['id']
+                }
+                success, error = dao.update('message', update_data, conditions)
+            else:
+                # save message
+                dao.insert('message',
+                        {'user_id': user_id, 'mess': message_content, 'is_select': 1, 'create_time': create_time})
 
             return json.dumps({"result": 1})
         except:
@@ -363,6 +373,7 @@ def handle_messages():
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         return InviteListService(db).remove_invite_queue(data['data'], user_linkedin_id)
 
+    # Section: 点赞功能
     if data['action'] == 'saveThumbsRecord':
         return Response(response=None,
                         status=200)
