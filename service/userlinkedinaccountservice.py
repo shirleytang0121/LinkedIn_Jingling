@@ -34,6 +34,15 @@ class UserLinkedinAccountService:
 
     def bind_account(self, linkedin_account):
         response_body = None
+        exist_account = self.db.session.query(UserLinkedinAccount).filter(
+            UserLinkedinAccount.my_urn == linkedin_account['data']['my_urn']).first()
+        if exist_account is not None:
+            response_body = json.dumps({
+                "data": linkedin_account['data'],
+                "result": 0,
+                "show": True
+            })
+            return response_body
         accounts = self.db.session.query(UserLinkedinAccount).filter(
             UserLinkedinAccount.user_id == linkedin_account['user_id']).all()
         linkedin_account['data'] = json.loads(linkedin_account['data'])
