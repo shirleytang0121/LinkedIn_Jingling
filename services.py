@@ -37,7 +37,7 @@ def handle_messages():
         return UserService(db).logout(user_id, data['login_code'])
 
     if data['action'] == 'register':
-        user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id']}
+        user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id'], 'secret': data['secret']}
         return UserService(db).register(user)
 
     login_info = {'id': data['account'], 'login_code': data['login_code']}

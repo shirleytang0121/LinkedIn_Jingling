@@ -73,7 +73,7 @@ class UserService:
             return json.dumps({"result": 2})
 
     def check_login_code(self, login_info):
-        if login_info['login_code'] is '' or login_info['login_code'] is None:
+        if login_info['login_code'] == '' or login_info['login_code'] is None:
             response_body = json.dumps({
                 'result': 3,
                 'tag': ""
@@ -98,19 +98,26 @@ class UserService:
         return False
 
     def register(self, user):
-        user = User(apn_user_id=None, apn_email=user["email"], password=user["password"])
         response_body = None
-        if self.check_valid_register(user):
-            user.set_password(user.password)
-            self.db.session.add(user)
-            self.db.session.commit()
-            self.db.session.refresh(user)
-            return Response(response=json.dumps({
-                "status": "success",
-                "account": user.id,
-                "email": user.apn_email}),
-                status=201,
-                mimetype='application/json')
+        if user['secret'] == 'T20240927_linkedin':
+            user = User(apn_user_id=None, apn_email=user["email"], password=user["password"])
+            if self.check_valid_register(user):
+                user.set_password(user.password)
+                self.db.session.add(user)
+                self.db.session.commit()
+                self.db.session.refresh(user)
+                return Response(response=json.dumps({
+                    "status": "success",
+                    "account": user.id,
+                    "email": user.apn_email}),
+                    status=201,
+                    mimetype='application/json')
+            else:
+                return Response(response=json.dumps({
+                    "status": "error",
+                    "message": "register account failed!"}),
+                    status=400,
+                    mimetype='application/json')
         else:
             return Response(response=json.dumps({
                 "status": "error",
