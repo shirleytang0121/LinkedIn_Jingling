@@ -33,11 +33,10 @@ def handle_messages():
         return response_body
 
     if data['action'] == 'logout':
-        user_id = UserLinkedinAccountService(db).get_user_id(data['my_urn'])
-        return UserService(db).logout(user_id, data['login_code'])
+        return UserService(db).logout(data['login_code'])
 
     if data['action'] == 'register':
-        user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id']}
+        user = {'email': data['email'], 'password': data['password'], 'apn_user_id': data['apn_user_id'], 'secret': data['secret']}
         return UserService(db).register(user)
 
     login_info = {'id': data['account'], 'login_code': data['login_code']}
@@ -140,9 +139,19 @@ def handle_messages():
             # 1. fetch user_id condition
             user_id = get_user_id(dao, account, my_urn)
 
-            # save message
-            dao.insert('message',
-                       {'user_id': user_id, 'mess': message_content, 'is_select': 1, 'create_time': create_time})
+            # 2. check if this message exist
+            conditions={'user_id':user_id, 'create_time':create_time}
+            message_id, error = dao.find('message', conditions, columns='id')
+            if message_id:
+                update_data = {'mess': message_content}
+                conditions = {
+                    'id': message_id[0]['id']
+                }
+                success, error = dao.update('message', update_data, conditions)
+            else:
+                # save message
+                dao.insert('message',
+                        {'user_id': user_id, 'mess': message_content, 'is_select': 1, 'create_time': create_time})
 
             return json.dumps({"result": 1})
         except:
@@ -363,6 +372,7 @@ def handle_messages():
         user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
         return InviteListService(db).remove_invite_queue(data['data'], user_linkedin_id)
 
+    # Section: 点赞功能
     if data['action'] == 'saveThumbsRecord':
         return Response(response=None,
                         status=200)
@@ -387,12 +397,12 @@ def handle_messages():
                 if senior=='false':
                     message['tidings'] = message['tidings'][:200]
                 else:
-                    message['tidigs'] = message['mess'][:300]
+                    message['tidigs'] = message['tidings'][:300]
             return format_response(True, messages)
         except:
             return format_response(False)
     
-    if data[action] == 'saveTidings':
+    if data['action'] == 'saveTidings':
         try:
             account = data['account']
             my_urn = data['my_urn']
@@ -404,11 +414,23 @@ def handle_messages():
             user_id = get_user_id(dao, account, my_urn)
             
             #save message
-            dao.insert('tidings',{'user_id':user_id,'tidings_title':tidings_title,'tidings':tidings_content,'is_select':1,'create_time':create_time})
-            
-            return json.dumps({"result":1})
+            conditions={'user_id':user_id, 'create_time':create_time}
+            message_id, error = dao.find('message', conditions, columns='id')
+            if message_id:
+                update_data = {'mess': message_content}
+                conditions = {
+                    'id': message_id[0]['id']
+                }
+                success, error = dao.update('tidings', update_data, conditions)
+            else:
+                # save message
+                dao.insert('tidings',
+                        {'user_id': user_id, 'tidings_title':tidings_title,'tidings': tidings_content, 'is_select': '1', 'create_time': create_time})
+
+            return json.dumps({"result": 1})
         except:
-            return json.dumps({"result":0})  
+            return json.dumps({"result": 0})
+    
 
     if data['action'] == 'selectTidings':
         try:
@@ -430,7 +452,7 @@ def handle_messages():
             if error:
                 print(f"Error in updateMessageIsSelect: {error}")
                 return json.dumps({"result": 0, "tidings_id": "", "action": is_select})
-            return json.dumps({"result": 1, "tidings_id": tidigs_id, "action": is_select})
+            return json.dumps({"result": 1, "tidings_id": tidings_id, "action": is_select})
         except Exception as e:
             print(f"Error in updateMessageIsSelect: {str(e)}")
             return json.dumps({"result": 0, "tidings_id": "", "action": is_select})

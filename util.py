@@ -29,12 +29,12 @@ def get_user_id(dao: DAO, account: str, my_urn: str) -> Optional[int]:
     :param my_urn: User's LinkedIn URN
     :return: User ID if found, None otherwise
     """
-    conditions = {'apn_user_id': account}
-    result, error = dao.find('user', conditions, columns='id')
-    conditions2 = {'user_id':result[0]['id'], 'linkedin_urn': my_urn}
-    result, error = dao.find('user_linkedin_account', conditions2, columns='id')
-    # conditions = {'user_id': account,'my_urn':my_urn}
-    # result, error = dao.find('user_linkedin_account', conditions, columns='id')
+    # conditions = {'apn_user_id': account}
+    # result, error = dao.find('user', conditions, columns='id')
+    # conditions2 = {'user_id':result[0]['id'], 'linkedin_urn': my_urn}
+    # result, error = dao.find('user_linkedin_account', conditions2, columns='id')
+    conditions = {'user_id': account,'my_urn':my_urn}
+    result, error = dao.find('user_linkedin_account', conditions, columns='id')
     
     if error:
         print(f"Database error occurred: {error}")
