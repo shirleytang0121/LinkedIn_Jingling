@@ -393,7 +393,7 @@ def handle_messages():
             return format_response(False)
     
     if data[action] == 'saveTidings':
-          try:
+        try:
             account = data['account']
             my_urn = data['my_urn']
             create_time = data['data']
@@ -404,11 +404,76 @@ def handle_messages():
             user_id = get_user_id(dao, account, my_urn)
             
             #save message
-            dao.insert('message',{'user_id':user_id,'tidings_title':tidings_title,'tidings':tidings_content,'is_select':1,'create_time':create_time})
+            dao.insert('tidings',{'user_id':user_id,'tidings_title':tidings_title,'tidings':tidings_content,'is_select':1,'create_time':create_time})
             
             return json.dumps({"result":1})
         except:
-            return json.dumps({"result":0})
+            return json.dumps({"result":0})  
+
+    if data['action'] == 'selectTidings':
+        try:
+            account = data['account']
+            my_urn = data['my_urn']
+            tidings_id = data['data']
+            is_select = data['other']
+
+            # 1. fetch user_id condition
+            user_id = get_user_id(dao, account, my_urn)
+            update_data = {'is_select': is_select}
+            conditions = {
+                'user_id': user_id,
+                'create_time': tidings_id
+            }
+            print(conditions)
+
+            success, error = dao.update('tidings', update_data, conditions)
+            if error:
+                print(f"Error in updateMessageIsSelect: {error}")
+                return json.dumps({"result": 0, "tidings_id": "", "action": is_select})
+            return json.dumps({"result": 1, "tidings_id": tidigs_id, "action": is_select})
+        except Exception as e:
+            print(f"Error in updateMessageIsSelect: {str(e)}")
+            return json.dumps({"result": 0, "tidings_id": "", "action": is_select})
+
+    if data['action'] == 'selectAllTidings':
+        try:
+            account = data['account']
+            my_urn = data['my_urn']
+            is_select = data['data']
+            total_tidings = data.get('other', None)
+
+            # 1. fetch user_id condition
+            user_id = get_user_id(dao, account, my_urn)
+
+            update_data = {'is_select': is_select}
+            conditions = {
+                'user_id': user_id
+            }
+            success, error = dao.update('tidings', update_data, conditions)
+            if error:
+                print(f"Error in updateMessageIsSelect: {error}")
+                return json.dumps({"result": 0, "action": is_select, "count": total_tidings})
+            return json.dumps({"result": 1, "action": is_select, "count": total_tidings})
+        except Exception as e:
+            print(f"Error in updateMessageIsSelect: {str(e)}")
+            return json.dumps({"result": 0, "action": is_select, "count": total_tidings})
+
+
+    if data['action'] == 'deleteTidings':
+        try:
+            account = data['account']
+            my_urn = data['my_urn']
+            # 1. fetch user_id condition
+            user_id = get_user_id(dao, account, my_urn)
+
+            # delete message
+            dao.delete('tidings', {'user_id': user_id, 'is_select': 1})
+
+            return json.dumps({"result": 1})
+        except:
+            return json.dumps({"result": 0})
+
+    
 
 
 
