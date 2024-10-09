@@ -61,6 +61,7 @@ class DAO:
         return self.execute_query(query, tuple(values))
 
     def insert(self, table, data):
+       
         if not data:
             return 0, "No data provided"
 
