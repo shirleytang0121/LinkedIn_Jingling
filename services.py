@@ -381,7 +381,7 @@ def handle_messages():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
 
-    # staging 
+    # staging
     # # Add Column
     # alter_query = """
     # ALTER TABLE linkedin_connect
