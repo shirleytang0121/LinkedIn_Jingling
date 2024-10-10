@@ -13,7 +13,7 @@ from service.userservice import UserService, check_urn
 from service.userlinkedinaccountservice import UserLinkedinAccountService
 from service.invitelistservice import InviteListService
 from service.invitemessageservice import InviteMessageService
-
+from service.linklistservice import LinkListService
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 app.config.from_object(DataConfig)
@@ -189,91 +189,100 @@ def handle_messages():
 
     # Section: 链接加人
     if data['action'] == 'getLine':
-        try:
-            # 1. fetch user_id condition
-            account = data['account']
-            my_urn = data['my_urn']
-            user_id = get_user_id(dao, account, my_urn)
-            page = int(data.get('data', 1))
-            items_per_page = 100
-            connect_type = 'line'
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return LinkListService(db).get_line(int(data.get('data', 1)), 100, 'line', user_linkedin_id)
+        # try:
+        #     # 1. fetch user_id condition
+        #     account = data['account']
+        #     my_urn = data['my_urn']
+        #     user_id = get_user_id(dao, account, my_urn)
+        #     page = int(data.get('data', 1))
+        #     items_per_page = 100
+        #     connect_type = 'line'
 
-            status_conditions = {'user_id': user_id, 'type': connect_type, 'status': None}
-            count_result = dao.count('linkedin_connect', status_conditions)
-            total = count_result[0][0]['total'] if count_result else 0
-            print(total)
-            offset = (page - 1) * items_per_page
-            query = """
-            SELECT user_id, websites 
-            FROM linkedin_connect 
-            WHERE user_id = %s AND type = %s AND (status IS NULL OR status = '')
-            LIMIT %s OFFSET %s
-            """
-            urls, _ = dao.execute_query(query, (user_id, connect_type, items_per_page, offset))
-            print(urls)
-            # print(json.dumps({"total": str(total), "result": 1, "data": urls, "count": 100, "page": str(page)}))
-            return json.dumps({"total": str(total), "result": 1, "data": urls, "count": 100, "page": str(page)})
-        except Exception as e:
-            print(f"Error in handle_messages: {str(e)}")
-            return json.dumps({"total": "0", "result": 0, "data": [], "count": 100, "page": str(page), "error": str(e)})
+        #     status_conditions = {'user_id': user_id, 'type': connect_type, 'status': None}
+        #     count_result = dao.count('linkedin_connect', status_conditions)
+        #     total = count_result[0][0]['total'] if count_result else 0
+        #     print(total)
+        #     offset = (page - 1) * items_per_page
+        #     query = """
+        #     SELECT user_id, websites 
+        #     FROM linkedin_connect 
+        #     WHERE user_id = %s AND type = %s AND (status IS NULL OR status = '')
+        #     LIMIT %s OFFSET %s
+        #     """
+        #     urls, _ = dao.execute_query(query, (user_id, connect_type, items_per_page, offset))
+        #     print(urls)
+        #     # print(json.dumps({"total": str(total), "result": 1, "data": urls, "count": 100, "page": str(page)}))
+        #     print(json.dumps({"total": str(total), "result": 1, "data": urls, "count": 100, "page": str(page)}))
+        #     return json.dumps({"total": str(total), "result": 1, "data": urls, "count": 100, "page": str(page)})
+        # except Exception as e:
+        #     print(f"Error in handle_messages: {str(e)}")
+        #     return json.dumps({"total": "0", "result": 0, "data": [], "count": 100, "page": str(page), "error": str(e)})
 
     if data['action'] == 'newLine':
-        try:
-            # 1. fetch user_id condition
-            account = data['account']
-            my_urn = data['my_urn']
-            new_urls = json.loads(data['data'])
-            connect_type = 'line'
-            user_id = get_user_id(dao, account, my_urn)
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return LinkListService(db).new_line(json.loads(data['data']),'line', user_linkedin_id)
 
-            # 2. exclude the new_url in new_urls if exist in linkedin_connect
-            existing_urls, error = dao.find_with_custom_condition(
-                'linkedin_connect',
-                {'user_id': user_id},
-                "((status IS NOT NULL AND status != '') OR (type = 'line' AND (status IS NULL OR status = '')))",
-                columns='websites'
-            )
-            if error:
-                print(f"Error fetching existing URLs: {error}")
-                return json.dumps({"result": 0})
+        # try:
+        #     # 1. fetch user_id condition
+        #     account = data['account']
+        #     my_urn = data['my_urn']
+        #     new_urls = json.loads(data['data'])
+        #     connect_type = 'line'
+        #     user_id = get_user_id(dao, account, my_urn)
 
-            existing_urls_set = set(url['websites'] for url in existing_urls)
-            deduplicated_urls = [url for url in set(new_urls) if url not in existing_urls_set]
-            print(deduplicated_urls)
+        #     # 2. exclude the new_url in new_urls if exist in linkedin_connect
+        #     existing_urls, error = dao.find_with_custom_condition(
+        #         'linkedin_connect',
+        #         {'user_id': user_id},
+        #         "((status IS NOT NULL AND status != '') OR (type = 'line' AND (status IS NULL OR status = '')))",
+        #         columns='websites'
+        #     )
+        #     if error:
+        #         print(f"Error fetching existing URLs: {error}")
+        #         return json.dumps({"result": 0})
 
-            # 3. insert the bulk data
-            bulk_data = [{'user_id': user_id, 'websites': url, 'type': connect_type} for url in deduplicated_urls]
-            rows_affected, error = dao.insert('linkedin_connect', bulk_data)
-            if error:
-                print(f"Error during insert: {error}")
-            else:
-                print(f"Successfully inserted {rows_affected} rows")
-            return json.dumps({"result": 1})
-        except Exception as e:
-            print(f"Error in handle_messages: {str(e)}")
-            return json.dumps({"result": 0})
+        #     existing_urls_set = set(url['websites'] for url in existing_urls)
+        #     deduplicated_urls = [url for url in set(new_urls) if url not in existing_urls_set]
+        #     print(deduplicated_urls)
+
+        #     # 3. insert the bulk data
+        #     bulk_data = [{'user_id': user_id, 'websites': url, 'type': connect_type} for url in deduplicated_urls]
+        #     rows_affected, error = dao.insert('linkedin_connect', bulk_data)
+        #     if error:
+        #         print(f"Error during insert: {error}")
+        #     else:
+        #         print(f"Successfully inserted {rows_affected} rows")
+        #     return json.dumps({"result": 1})
+        # except Exception as e:
+        #     print(f"Error in handle_messages: {str(e)}")
+        #     return json.dumps({"result": 0})
 
     if data['action'] == 'removeLine':
-        try:
-            # 1. fetch user_id condition
-            account = data['account']
-            my_urn = data['my_urn']
-            delete_urls = json.loads(data['data'])
-            connect_type = 'line'
-            user_id = get_user_id(dao, account, my_urn)
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return LinkListService(db).remove_line(json.loads(data['data']),'line', user_linkedin_id)
 
-            # 2. delete the bulk data
-            conditions = {'user_id': user_id, 'type': connect_type}
-            rows_affected, error = dao.bulk_delete('linkedin_connect', conditions, delete_urls, 'websites')
-            if error:
-                print(f"Error during delete: {error}")
-                return json.dumps({"result": 0})
-            else:
-                print(f"Successfully deleted {rows_affected} rows")
-                return json.dumps({"result": 1, "deleted": rows_affected})
-        except Exception as e:
-            print(f"Error in handle_messages: {str(e)}")
-            return json.dumps({"result": 0})
+        # try:
+        #     # 1. fetch user_id condition
+        #     account = data['account']
+        #     my_urn = data['my_urn']
+        #     delete_urls = json.loads(data['data'])
+        #     connect_type = 'line'
+        #     user_id = get_user_id(dao, account, my_urn)
+
+        #     # 2. delete the bulk data
+        #     conditions = {'user_id': user_id, 'type': connect_type}
+        #     rows_affected, error = dao.bulk_delete('linkedin_connect', conditions, delete_urls, 'websites')
+        #     if error:
+        #         print(f"Error during delete: {error}")
+        #         return json.dumps({"result": 0})
+        #     else:
+        #         print(f"Successfully deleted {rows_affected} rows")
+        #         return json.dumps({"result": 1, "deleted": rows_affected})
+        # except Exception as e:
+        #     print(f"Error in handle_messages: {str(e)}")
+        #     return json.dumps({"result": 0})
 
     # Section: 点击加人
     if data['action'] == 'getMesAddFriend':
@@ -322,7 +331,7 @@ def handle_messages():
                 conditions = {
                     'user_id': user_id,
                     'websites': linkedin_id,
-                    'type': tag
+                    # 'type': tag
                 }
                 success, error = dao.update('linkedin_connect', update_data, conditions)
 
@@ -394,7 +403,6 @@ def handle_messages():
                         status=200)
 
     # 群发模版
-
     if data['action'] == 'getTidings':
         try:
             # 1. fetch user_id condition
