@@ -600,6 +600,7 @@ def handle_messages():
                 urn = friend['urn']
                 conditions = {'urn': urn}
                 conditions_info = {'user_id': user_id, 'friend_urn': urn}
+         
                 friend_urn, error = dao.find('myFriend', conditions, columns='urn')
                 friend_data, error = dao.find('friends', conditions_info, columns='friend_urn, dig_state, is_prohibit, send_queue, send_time, remark, group_name')
 
@@ -622,10 +623,10 @@ def handle_messages():
                         'urn': urn,
                         'first_name': friend['first_name'],
                         'last_name': friend['last_name'],
-                        'img': friend['img'],
+                        'img': None,
                         'position': friend['position'],
                         'public_id': friend['public_id'],
-                        'is_prohibited': None
+                        'is_prohibited': 0
                     })
                 
                 if friend_data:
@@ -653,15 +654,14 @@ def handle_messages():
                     }
                     result_data.append(my_frined_info_data_2)
 
-           
             if insert_myfriend_data:
                 dao.insert('myFriend', insert_myfriend_data)
             if insert_friends_data:
                 dao.insert('friends', insert_friends_data)
             # if update_myfriend_data:
             #     dao.bulk_update('myFriend', update_myfriend_data, 'urn')
+            print('result' ,result_data)
 
-            print('data', result_data)
             return json.dumps({"result": 1, "data": result_data})
 
         except Exception as e:

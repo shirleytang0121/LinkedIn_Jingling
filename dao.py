@@ -77,7 +77,6 @@ class DAO:
             query = f"INSERT INTO {table} ({columns}) VALUES {placeholders}"
 
             values = [val for item in data for val in item.values()]
-            print('bluk insert',query)
             return self.execute_query(query, values)
 
         elif isinstance(data, dict):
