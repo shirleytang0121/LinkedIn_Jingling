@@ -1,5 +1,4 @@
 from sqlalchemy import select, and_
-
 from model.invitelist import InviteList
 import json
 from flask import make_response, jsonify, Response
