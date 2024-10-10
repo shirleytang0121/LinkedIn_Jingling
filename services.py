@@ -415,11 +415,12 @@ def handle_messages():
             
             #save message
             conditions={'user_id':user_id, 'create_time':create_time}
-            message_id, error = dao.find('message', conditions, columns='id')
-            if message_id:
-                update_data = {'mess': message_content}
+            # update_data={'tidings_title':tidings_title, 'tidings':tidigs}
+            tidings_id, error = dao.find('tidings', conditions, columns='id')
+            if tidigs_id:
+                update_data={'tidings_title':tidings_title, 'tidings':tidigs}
                 conditions = {
-                    'id': message_id[0]['id']
+                    'id': tidings_id[0]['id']
                 }
                 success, error = dao.update('tidings', update_data, conditions)
             else:
@@ -494,6 +495,163 @@ def handle_messages():
             return json.dumps({"result": 1})
         except:
             return json.dumps({"result": 0})
+    
+    #好友功能
+    # if data['action']=='saveFriend':
+    #     try:
+    #         account = data['account']
+    #         my_urn = data['my_urn']
+    #         friends = data['data']
+    #         friends_list = json.loads(friends)
+    #         user_id = get_user_id(dao, account, my_urn)
+    #         result_data=[]
+    #         for friend in friends_list:
+    #             urn = friend['urn']
+    
+    #             # Check if the urn exists in the database
+    #             conditions = {'urn': urn}
+    #             friend_urn, error = dao.find('myFriend', conditions, columns='urn')
+    #             if friend_urn:
+    #                  # Update the existing record
+    #                 update_data = {
+    #                     'first_name': friend['first_name'],
+    #                     'last_name': friend['last_name'],
+    #                     'img': friend['img'], 
+    #                     'position': friend['position'],
+    #                     'public_id': friend['public_id']
+    #                 }
+    #                 conditions = {'urn': urn}
+    #                 success, error = dao.update('myFriend', update_data, conditions)
+    #                 conditions_info = {'user_id':user_id, 'friend_urn':urn}
+    #                 friend_data,error = dao.find('friends',conditions_info,columns='friend_urn, dig_state,is_prohibit, send_queue, send_time, remark, group_name ')
+    #                 print('friend_data',friend_data)
+    #                 result_data.append(friend_data[0])
+    #             else:
+    #                 # Insert a new record if not found
+    #                 new_friend_data = {
+    #                     'urn': urn,
+    #                     'first_name': friend['first_name'],
+    #                     'last_name': friend['last_name'],
+    #                     'img': friend['img'], 
+    #                     'position': friend['position'],
+    #                     'public_id': friend['public_id']
+    #                 }
+    #                 my_frined_info_data = {
+    #                     'user_id':user_id,
+    #                     'friend_urn':urn,
+    #                     'dig_state':0,
+    #                     'is_prohibit':0,
+    #                     'send_queue':0,
+    #                     'remark':'',
+    #                 }
+    #                 dao.insert('myFriend', new_friend_data)
+    #                 dao.insert('friends',my_frined_info_data)
+    #                 my_frined_info_data_2= {
+    #                     'friend_urn':urn,
+    #                     'dig_state':0,
+    #                     'is_prohibit':0,
+    #                     'send_queue':0,
+    #                     'send_time':NULL,
+    #                     'remark':'',
+    #                     'group_name':NULL
+    #                 }
+    #                 result_data.append(my_frined_info_data_2)
+    #         print('data', result_data)
+    #         return json.dumps({"result": 1, "data":result_data})
+    #     except:
+    #         return json.dumps({"result": 0})
+    if data['action'] == 'saveFriend':
+        try:
+            account = data['account']
+            my_urn = data['my_urn']
+            friends = data['data']
+            friends_list = json.loads(friends)
+            user_id = get_user_id(dao, account, my_urn)
+            result_data = []
+
+            insert_myfriend_data = []
+            update_myfriend_data = []
+            insert_friends_data = []
+            update_friends_data = []
+
+            for friend in friends_list:
+                urn = friend['urn']
+                conditions = {'urn': urn}
+                conditions_info = {'user_id': user_id, 'friend_urn': urn}
+                friend_urn, error = dao.find('myFriend', conditions, columns='urn')
+                friend_data, error = dao.find('friends', conditions_info, columns='friend_urn, dig_state, is_prohibit, send_queue, send_time, remark, group_name')
+
+                if friend_urn:
+                    # Prepare data for update
+                    update_myfriend_data.append({
+                        'urn': urn,
+                        'first_name': friend['first_name'],
+                        'last_name': friend['last_name'],
+                        'img': friend['img'],
+                        'position': friend['position'],
+                        'public_id': friend['public_id']
+                    })
+                    # Get friends data and append to result_data
+                    
+
+                else:
+                    # Prepare data for insert
+                    insert_myfriend_data.append({
+                        'urn': urn,
+                        'first_name': friend['first_name'],
+                        'last_name': friend['last_name'],
+                        'img': friend['img'],
+                        'position': friend['position'],
+                        'public_id': friend['public_id'],
+                        'is_prohibited': None
+                    })
+                
+                if friend_data:
+                    result_data.append(friend_data[0])
+                else:
+                    my_friend_info_data = {
+                        'user_id': user_id,
+                        'friend_urn': urn,
+                        'dig_state': 0,
+                        'is_prohibit': 0,
+                        'send_time':None,
+                        'send_queue': 0,
+                        'remark': '',
+                        'group_name':None
+                    }
+                    insert_friends_data.append(my_friend_info_data)
+                    my_frined_info_data_2= {
+                        'friend_urn':urn,
+                        'dig_state':0,
+                        'is_prohibit':0,
+                        'send_queue':0,
+                        'send_time':None,
+                        'remark':'',
+                        'group_name':None
+                    }
+                    result_data.append(my_frined_info_data_2)
+
+           
+            if insert_myfriend_data:
+                dao.insert('myFriend', insert_myfriend_data)
+            if insert_friends_data:
+                dao.insert('friends', insert_friends_data)
+            # if update_myfriend_data:
+            #     dao.bulk_update('myFriend', update_myfriend_data, 'urn')
+
+            print('data', result_data)
+            return json.dumps({"result": 1, "data": result_data})
+
+        except Exception as e:
+            print(e)
+            return json.dumps({"result": 0})
+
+        
+    
+    
+    
+    
+
 
     
 
