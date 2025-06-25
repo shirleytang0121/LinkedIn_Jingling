@@ -403,120 +403,71 @@ def handle_messages():
                         status=200)
 
     # 群发模版
-    if data['action'] == 'getTidings':
-        try:
-            # 1. fetch user_id condition
-            account = data['account']
-            my_urn = data['my_urn']
-            senior = data['other']
-            user_id = get_user_id(dao, account, my_urn)
-            conditions = {'user_id': user_id}
-            # 2. search results
-            messages, error = dao.find('tidings', conditions, columns='create_time, tidings_title, tidings, is_select')
-            # Convert 'id' to 'mess_id' and ensure it's a string
-            if error:
-                return format_response(False)
-            for message in messages:
-                message['tidings_id'] = str(message.pop('create_time'))
-                if senior=='false':
-                    message['tidings'] = message['tidings'][:200]
-                else:
-                    message['tidigs'] = message['tidings'][:300]
-            return format_response(True, messages)
-        except:
-            return format_response(False)
-    
+     if data['action'] == 'getTidings':
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return TidingsService(db).get_tidings(user_linkedin_id)
+
     if data['action'] == 'saveTidings':
-        try:
-            account = data['account']
-            my_urn = data['my_urn']
-            create_time = data['data']
-            tidings_content=data['other']
-            tidings_title = data['tag']
-            
-            # 1. fetch user_id condition
-            user_id = get_user_id(dao, account, my_urn)
-            
-            #save message
-            conditions={'user_id':user_id, 'create_time':create_time}
-            # update_data={'tidings_title':tidings_title, 'tidings':tidigs}
-            tidings_id, error = dao.find('tidings', conditions, columns='id')
-            if tidigs_id:
-                update_data={'tidings_title':tidings_title, 'tidings':tidigs}
-                conditions = {
-                    'id': tidings_id[0]['id']
-                }
-                success, error = dao.update('tidings', update_data, conditions)
-            else:
-                # save message
-                dao.insert('tidings',
-                        {'user_id': user_id, 'tidings_title':tidings_title,'tidings': tidings_content, 'is_select': '1', 'create_time': create_time})
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return TidingsService(db).save_tidings(user_linkedin_id,data['tag'],data['other'],data['data'])
 
-            return json.dumps({"result": 1})
-        except:
-            return json.dumps({"result": 0})
-    
     if data['action'] == 'selectTidings':
-        try:
-            account = data['account']
-            my_urn = data['my_urn']
-            tidings_id = data['data']
-            is_select = data['other']
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return TidingsService(db).select_tidings(user_linkedin_id,data['data'],data['other'])
 
-            # 1. fetch user_id condition
-            user_id = get_user_id(dao, account, my_urn)
-            update_data = {'is_select': is_select}
-            conditions = {
-                'user_id': user_id,
-                'create_time': tidings_id
-            }
-            print(conditions)
+        # try:
+        #     account = data['account']
+        #     my_urn = data['my_urn']
+        #     tidings_id = data['data']
+        #     is_select = data['other']
 
-            success, error = dao.update('tidings', update_data, conditions)
-            if error:
-                print(f"Error in updateMessageIsSelect: {error}")
-                return json.dumps({"result": 0, "tidings_id": "", "action": is_select})
-            return json.dumps({"result": 1, "tidings_id": tidings_id, "action": is_select})
-        except Exception as e:
-            print(f"Error in updateMessageIsSelect: {str(e)}")
-            return json.dumps({"result": 0, "tidings_id": "", "action": is_select})
+        #     # 1. fetch user_id condition
+        #     user_id = get_user_id(dao, account, my_urn)
+        #     update_data = {'is_select': is_select}
+        #     conditions = {
+        #         'user_id': user_id,
+        #         'create_time': tidings_id
+        #     }
+        #     print(conditions)
+
+        #     success, error = dao.update('tidings', update_data, conditions)
+        #     if error:
+        #         print(f"Error in updateMessageIsSelect: {error}")
+        #         return json.dumps({"result": 0, "tidings_id": "", "action": is_select})
+        #     return json.dumps({"result": 1, "tidings_id": tidings_id, "action": is_select})
+        # except Exception as e:
+        #     print(f"Error in updateMessageIsSelect: {str(e)}")
+        #     return json.dumps({"result": 0, "tidings_id": "", "action": is_select})
 
     if data['action'] == 'selectAllTidings':
-        try:
-            account = data['account']
-            my_urn = data['my_urn']
-            is_select = data['data']
-            total_tidings = data.get('other', None)
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return TidingsService(db).select_all_tidings(data['data'],data.get('other', None),user_linkedin_id)
 
-            # 1. fetch user_id condition
-            user_id = get_user_id(dao, account, my_urn)
+        # try:
+        #     account = data['account']
+        #     my_urn = data['my_urn']
+        #     is_select = data['data']
+        #     total_tidings = data.get('other', None)
 
-            update_data = {'is_select': is_select}
-            conditions = {
-                'user_id': user_id
-            }
-            success, error = dao.update('tidings', update_data, conditions)
-            if error:
-                print(f"Error in updateMessageIsSelect: {error}")
-                return json.dumps({"result": 0, "action": is_select, "count": total_tidings})
-            return json.dumps({"result": 1, "action": is_select, "count": total_tidings})
-        except Exception as e:
-            print(f"Error in updateMessageIsSelect: {str(e)}")
-            return json.dumps({"result": 0, "action": is_select, "count": total_tidings})
+        #     # 1. fetch user_id condition
+        #     user_id = get_user_id(dao, account, my_urn)
+
+        #     update_data = {'is_select': is_select}
+        #     conditions = {
+        #         'user_id': user_id
+        #     }
+        #     success, error = dao.update('tidings', update_data, conditions)
+        #     if error:
+        #         print(f"Error in updateMessageIsSelect: {error}")
+        #         return json.dumps({"result": 0, "action": is_select, "count": total_tidings})
+        #     return json.dumps({"result": 1, "action": is_select, "count": total_tidings})
+        # except Exception as e:
+        #     print(f"Error in updateMessageIsSelect: {str(e)}")
+        #     return json.dumps({"result": 0, "action": is_select, "count": total_tidings})
 
     if data['action'] == 'deleteTidings':
-        try:
-            account = data['account']
-            my_urn = data['my_urn']
-            # 1. fetch user_id condition
-            user_id = get_user_id(dao, account, my_urn)
-
-            # delete message
-            dao.delete('tidings', {'user_id': user_id, 'is_select': 1})
-
-            return json.dumps({"result": 1})
-        except:
-            return json.dumps({"result": 0})
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return TidingsService(db).delete_tidings(user_linkedin_id)
     
     #好友功能
     # if data['action']=='saveFriend':
@@ -583,90 +534,25 @@ def handle_messages():
     #     except:
     #         return json.dumps({"result": 0})
     if data['action'] == 'saveFriend':
-        try:
-            account = data['account']
-            my_urn = data['my_urn']
-            friends = data['data']
-            friends_list = json.loads(friends)
-            user_id = get_user_id(dao, account, my_urn)
-            result_data = []
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return FriendService(db).save_friend(json.loads(data['data']), user_linkedin_id)
+        
+    if data['action'] == 'editRemark':
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return FriendService(db).edit_remark(user_linkedin_id,data["data"],data["other"],data["tag"])
+    
+    if data['action'] == 'getSendForFriend':
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return FriendService(db).get_send_for_friend(user_linkedin_id,json.loads(data['data']))
 
-            insert_myfriend_data = []
-            update_myfriend_data = []
-            insert_friends_data = []
-            update_friends_data = []
-
-            for friend in friends_list:
-                urn = friend['urn']
-                conditions = {'urn': urn}
-                conditions_info = {'user_id': user_id, 'friend_urn': urn}
-         
-                friend_urn, error = dao.find('myFriend', conditions, columns='urn')
-                friend_data, error = dao.find('friends', conditions_info, columns='friend_urn, dig_state, is_prohibit, send_queue, send_time, remark, group_name')
-
-                if friend_urn:
-                    # Prepare data for update
-                    update_myfriend_data.append({
-                        'urn': urn,
-                        'first_name': friend['first_name'],
-                        'last_name': friend['last_name'],
-                        'img': friend['img'],
-                        'position': friend['position'],
-                        'public_id': friend['public_id']
-                    })
-                    # Get friends data and append to result_data
-                    
-
-                else:
-                    # Prepare data for insert
-                    insert_myfriend_data.append({
-                        'urn': urn,
-                        'first_name': friend['first_name'],
-                        'last_name': friend['last_name'],
-                        'img': None,
-                        'position': friend['position'],
-                        'public_id': friend['public_id'],
-                        'is_prohibited': 0
-                    })
-                
-                if friend_data:
-                    result_data.append(friend_data[0])
-                else:
-                    my_friend_info_data = {
-                        'user_id': user_id,
-                        'friend_urn': urn,
-                        'dig_state': 0,
-                        'is_prohibit': 0,
-                        'send_time':None,
-                        'send_queue': 0,
-                        'remark': '',
-                        'group_name':None
-                    }
-                    insert_friends_data.append(my_friend_info_data)
-                    my_frined_info_data_2= {
-                        'friend_urn':urn,
-                        'dig_state':0,
-                        'is_prohibit':0,
-                        'send_queue':0,
-                        'send_time':None,
-                        'remark':'',
-                        'group_name':None
-                    }
-                    result_data.append(my_frined_info_data_2)
-
-            if insert_myfriend_data:
-                dao.insert('myFriend', insert_myfriend_data)
-            if insert_friends_data:
-                dao.insert('friends', insert_friends_data)
-            # if update_myfriend_data:
-            #     dao.bulk_update('myFriend', update_myfriend_data, 'urn')
-            print('result' ,result_data)
-
-            return json.dumps({"result": 1, "data": result_data})
-
-        except Exception as e:
-            print(e)
-            return json.dumps({"result": 0})
+    if data['action'] == 'saveSendRecord':
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        success=LogService(db).upsert_record('send', user_linkedin_id)
+        return FriendService(db).save_send_record(user_linkedin_id,data["data"])
+    
+    if data['action'] == 'getSendForAuto':
+        user_linkedin_id = UserLinkedinAccountService(db).get_bind_account_id(data["account"], data["my_urn"])
+        return FriendService(db).get_send_for_auto(user_linkedin_id,json.loads(data['data']))
 
         
     
