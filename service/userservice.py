@@ -41,8 +41,8 @@ class UserService:
             if existed_user.check_password(user.password):
                 login_code = generate_random_string(6)
                 existed_user.login_code = login_code
-                self.db.session.commit()
-                self.db.session.refresh(existed_user)
+                # self.db.session.commit()
+                # self.db.session.refresh(existed_user)
                 response_body = json.dumps({
                     'result': 1,
                     'data': {
@@ -67,10 +67,11 @@ class UserService:
             existed_user = User.query.filter(User.login_code == login_code).first()
             if existed_user:
                 existed_user.login_code = None
-                self.db.session.commit()
-                self.db.session.refresh(existed_user)
+                # self.db.session.commit()
+                # self.db.session.refresh(existed_user)
             return json.dumps({"result": 1})
         except Exception as e:
+            self.db.session.rollback()
             logging.error(e)
             return json.dumps({"result": 2})
 

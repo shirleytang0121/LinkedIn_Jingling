@@ -81,8 +81,8 @@ class UserLinkedinAccountService:
                                                             img=linkedin_account['data']['img'], bind_time=datetime.datetime.now(),
                                                             unbind=0)
                 self.db.session.add(user_linkedin_account)
-                self.db.session.commit()
-                self.db.session.refresh(user_linkedin_account)
+                # self.db.session.commit()
+                # self.db.session.refresh(user_linkedin_account)
                 response_body = json.dumps({
                     "data": linkedin_account['data'],
                     "result": 1,
@@ -91,6 +91,7 @@ class UserLinkedinAccountService:
                 return response_body
             except Exception as e:
                 logging.error(e)
+                self.db.session.rollback()
                 response_body = json.dumps({
                     "data": linkedin_account['data'],
                     "result": 0,
